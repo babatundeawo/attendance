@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Attendance Register</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16283F">
+<style>
+:root{
+  --paper:#F5F2EA;--line:#DAD3BF;--ink:#1F3A5F;--ink-deep:#16283F;
+  --text:#241F17;--soft:#6B6455;--present:#3F6C51;--present-bg:#E4EEE4;
+  --absent:#A63D40;--absent-bg:#F3E2E1;--card:#FFFFFF;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--paper:#191712;--line:#322D22;--ink:#7FA0C9;--ink-deep:#9EBBDD;--text:#ECE6D8;--soft:#A69C86;--present:#7FBE93;--present-bg:#1E2B21;--absent:#E28C8E;--absent-bg:#2E1C1C;--card:#221F18;}
+}
+:root[data-theme="dark"]{--paper:#191712;--line:#322D22;--ink:#7FA0C9;--ink-deep:#9EBBDD;--text:#ECE6D8;--soft:#A69C86;--present:#7FBE93;--present-bg:#1E2B21;--absent:#E28C8E;--absent-bg:#2E1C1C;--card:#221F18;}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--text);font-family:-apple-system,"Segoe UI",Roboto,sans-serif;}
+body{display:flex;flex-direction:column;min-height:100%;}
+h1,h2{font-family:Georgia,"Times New Roman",serif;}
+h1{font-size:1.25rem;margin:0 0 4px;}
+h2{font-size:0.92rem;margin:14px 0 6px;color:var(--ink);}
+header{padding:calc(14px + env(safe-area-inset-top,0px)) 16px 10px;background:var(--ink-deep);color:#F5F2EA;}
+.sub{font-size:0.78rem;color:#C7D3E2;margin:0;}
+nav{display:flex;background:var(--ink-deep);border-top:1px solid rgba(255,255,255,0.1);flex-wrap:wrap;}
+nav button{flex:1;min-width:60px;background:none;border:none;color:#B9C6D8;padding:9px 2px;font-size:0.68rem;font-weight:600;cursor:pointer;}
+nav button.active{color:#fff;border-bottom:2px solid #fff;}
+main{flex:1;padding:12px 14px 24px;overflow-x:hidden;}
+.tab{display:none;}
+.tab.active{display:block;}
+.row-flex{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+button.chip{background:var(--card);border:1px solid var(--line);color:var(--text);padding:7px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;}
+button.chip.on{background:var(--ink-deep);color:#fff;border-color:var(--ink-deep);}
+select,input[type="date"],input[type="text"],input[type="tel"]{padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:0.85rem;width:100%;}
+.summary{display:flex;gap:8px;margin:8px 0;}
+.pill{flex:1;text-align:center;padding:7px 4px;border-radius:9px;font-size:0.7rem;font-weight:600;}
+.pill .n{display:block;font-size:1.05rem;font-family:Georgia,serif;}
+.pill.present{background:var(--present-bg);color:var(--present);}
+.pill.absent{background:var(--absent-bg);color:var(--absent);}
+.pill.marked{background:var(--line);color:var(--soft);}
+.stud-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 10px;margin:5px 0;background:var(--card);border:1px solid var(--line);border-radius:9px;}
+.stud-row .num{font-size:0.72rem;color:var(--soft);width:20px;flex-shrink:0;}
+.stud-row .name{flex:1;font-size:0.9rem;font-weight:500;}
+.status-btn{border:none;border-radius:8px;padding:7px 13px;font-size:0.78rem;font-weight:700;cursor:pointer;min-width:74px;text-align:center;background:var(--line);color:var(--soft);}
+.status-btn[data-status="present"]{background:var(--present-bg);color:var(--present);}
+.status-btn[data-status="absent"]{background:var(--absent-bg);color:var(--absent);}
+table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:14px;}
+th,td{text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
+th{color:var(--soft);font-weight:600;font-size:0.68rem;text-transform:uppercase;}
+tfoot td{font-weight:700;border-top:2px solid var(--ink);}
+.holiday-tag{background:var(--absent-bg);color:var(--absent);font-size:0.68rem;padding:2px 7px;border-radius:6px;}
+.hol-item,.stu-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:6px;font-size:0.85rem;cursor:pointer;}
+.hol-item button,.stu-item button{background:var(--absent-bg);color:var(--absent);border:none;border-radius:6px;padding:5px 10px;font-size:0.72rem;font-weight:700;}
+.note{font-size:0.75rem;color:var(--soft);margin:6px 0 14px;}
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:0.72rem;color:var(--soft);margin-bottom:3px;font-weight:600;}
+.form-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px;}
+footer{padding:8px 16px calc(12px + env(safe-area-inset-bottom,0px));text-align:center;font-size:0.66rem;color:var(--soft);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Attendance Register</h1>
+  <p class="sub" id="hdrSub">Term: 14 Sep 2026 · 13 weeks</p>
+</header>
+<nav>
+  <button class="tabbtn active" data-tab="register">Register</button>
+  <button class="tabbtn" data-tab="weekly">Weekly</button>
+  <button class="tabbtn" data-tab="term">Term</button>
+  <button class="tabbtn" data-tab="students">Students</button>
+  <button class="tabbtn" data-tab="holidays">Holidays</button>
+</nav>
+<main>
+  <section class="tab active" id="tab-register">
+    <div class="row-flex">
+      <button class="chip" id="prevDay">‹ Prev day</button>
+      <input type="date" id="datePicker">
+      <button class="chip" id="nextDay">Next day ›</button>
+    </div>
+    <div class="row-flex">
+      <button class="chip on" id="sessMorning">Morning</button>
+      <button class="chip" id="sessAfternoon">Afternoon</button>
+      <span id="holBadge"></span>
+    </div>
+    <div class="summary">
+      <div class="pill present"><span class="n" id="cntP">0</span>Present</div>
+      <div class="pill absent"><span class="n" id="cntA">0</span>Absent</div>
+      <div class="pill marked"><span class="n" id="cntU">0</span>Unmarked</div>
+    </div>
+    <div class="row-flex">
+      <button class="chip" id="markAllP">Mark all present</button>
+      <button class="chip" id="clearDay">Clear this session</button>
+    </div>
+    <div id="studentList"></div>
+  </section>
+
+  <section class="tab" id="tab-weekly">
+    <div class="row-flex">
+      <label style="font-size:0.85rem;">Week: </label>
+      <select id="weekSelect"></select>
+    </div>
+    <div id="weeklyOut"></div>
+  </section>
+
+  <section class="tab" id="tab-term">
+    <div id="termOut"></div>
+  </section>
+
+  <section class="tab" id="tab-students">
+    <div class="form-card">
+      <h2 style="margin-top:0;" id="formTitle">Add a student</h2>
+      <input type="hidden" id="fId">
+      <div class="field"><label>Full name (Surname first)</label><input type="text" id="fName" placeholder="e.g. ABRAHAM BLESSING"></div>
+      <div class="field"><label>Gender</label>
+        <div class="row-flex"><button class="chip on" id="fGenM" type="button">Male</button><button class="chip" id="fGenF" type="button">Female</button></div>
+      </div>
+      <div class="field"><label>Admission number</label><input type="text" id="fAdm" placeholder="e.g. STU/2026/014"></div>
+      <div class="field"><label>Date of birth</label><input type="date" id="fDob"></div>
+      <div class="field"><label>Parent/guardian name</label>
+        <div class="row-flex"><input type="text" id="fParent" placeholder="Mr & Mrs ..." style="flex:1;"><button class="chip" id="fAutoParent" type="button">Auto-fill</button></div>
+      </div>
+      <div class="field"><label>Address</label><input type="text" id="fAddr" placeholder="e.g. Onidundun, Akinyele"></div>
+      <div class="field"><label>Parent phone number</label><input type="tel" id="fPhone" placeholder="e.g. 080..."></div>
+      <div class="field"><label>Religion</label>
+        <select id="fReligion"><option>Christianity</option><option>Islam</option><option>Traditional</option></select>
+      </div>
+      <div class="row-flex">
+        <button class="chip on" id="fSave">Save student</button>
+        <button class="chip" id="fCancel">Cancel / New</button>
+      </div>
+    </div>
+    <h2 style="margin-top:0;">Male students</h2>
+    <div id="stuListM"></div>
+    <h2>Female students</h2>
+    <div id="stuListF"></div>
+  </section>
+
+  <section class="tab" id="tab-holidays">
+    <div class="row-flex">
+      <input type="date" id="holDate">
+      <input type="text" id="holLabel" placeholder="Reason (optional)" style="flex:1;">
+      <button class="chip on" id="addHoliday">Add</button>
+    </div>
+    <div id="holList"></div>
+  </section>
+</main>
+<footer>Saved automatically on this device · works fully offline once installed</footer>
+
+<script>
+(function(){
+var KEY_STU="att_v3_students", KEY_ATT="att_v3_attendance", KEY_HOL="att_v3_holidays";
+function load(k,d){try{var r=localStorage.getItem(k);return r?JSON.parse(r):d;}catch(e){return d;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+var SEED_M=["ABUBAKAR HARUNA","ABUBAKAR LAWAZANA","AJOBO ADAMS","ARINOYE PETER","AYOMIKUN MICHAEL","DAVID ANDREW","DOMINIC SUNDAY","IBRAHIM ROSHEED","IBRAHIM SAMAD","ISMAIL SAMAD","JAMES DAVID","JOHN JOSEPH","MURITALA ABDULRASHEED","OLANIYAN JULIUS","OLANIYI SAMAD","OLAYODE ABDULSAMAD","OLUKUNMI DANIEL","OMOWUNMI FRIDAUS","OYEDOKUN KHOLEED","PETER SUNDAY","RASAQ RIDWAN","SAMUEL KEHINDE","SARUMI ABDULQUDUS"];
+var SEED_F=["ABRAHAM BLESSING","AJANI ADENIKE","AJAYI DORCAS","AKOREDE SOFIAT","ATOBATELE DEBORAH","BADMUS ALLIAT","DADA HERITAGE","DARAMOLA AISHAT","GBADEBO REBECCA","HAMZAT AYOKA","IDRIS ROKEEBAT","ISAAC ROSELINE","MUHAMMED MARIAM","MUHAMMED SADIA","MUSTAPHA ROHEEMAT","OGUNDAIRO DEBORAH","OLADELE RODIAT","OLALEKAN ALIYAT","OLANIYAN RODIAT","RASAQ RUKAYAT","SANNI AISHAT","SHUAIB MARIAM","USMAN ABIBAT","YUSUF AYISAT","SAMUEL TAIWO","WAHAB YUSROH","ADEJUMO VICTORIA"];
+function genId(){return "s"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function titleCase(s){return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
+function autoParent(name){var first=(name.trim().split(/\s+/)[0]||"");return first?"Mr & Mrs "+titleCase(first):"";}
+
+var students=load(KEY_STU,null);
+if(!students){
+  students=[];
+  SEED_M.forEach(function(n){students.push({id:genId(),name:n,gender:"M",admissionNo:"",dob:"",parentName:autoParent(n),address:"",phone:"",religion:"Christianity"});});
+  SEED_F.forEach(function(n){students.push({id:genId(),name:n,gender:"F",admissionNo:"",dob:"",parentName:autoParent(n),address:"",phone:"",religion:"Christianity"});});
+  save(KEY_STU,students);
+}
+function sortedStudents(){
+  return students.slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+}
+
+var TERM_START="2026-09-14";
+var WEEKS=13;
+var SESSIONS=["morning","afternoon"];
+var attendance=load(KEY_ATT,{});
+var holidays=load(KEY_HOL,{});
+
+function pad(n){return String(n).padStart(2,"0");}
+function dstr(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function parseD(s){return new Date(s+"T00:00:00");}
+function addDays(d,n){var r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function todayStr(){return dstr(new Date());}
+function isWeekend(d){var w=d.getDay();return w===0||w===6;}
+function weekDates(w){var start=addDays(parseD(TERM_START),(w-1)*7);var out=[];for(var i=0;i<5;i++){out.push(dstr(addDays(start,i)));}return out;}
+function isSchoolDay(ds){var d=parseD(ds);if(isWeekend(d))return false;if(holidays[ds])return false;if(ds>todayStr())return false;return true;}
+function getRec(ds){if(!attendance[ds])attendance[ds]={};return attendance[ds];}
+function getStatus(ds,id,sess){var r=attendance[ds];if(!r||!r[id]||!r[id][sess])return "unmarked";return r[id][sess];}
+function setStatus(ds,id,sess,status){var r=getRec(ds);if(!r[id])r[id]={};if(status==="unmarked")delete r[id][sess];else r[id][sess]=status;save(KEY_ATT,attendance);}
+function dayPoints(ds,id){var pts=0;SESSIONS.forEach(function(s){if(getStatus(ds,id,s)==="present")pts++;});return pts;}
+function sessionTally(ds,sess){var c=0;students.forEach(function(st){if(getStatus(ds,st.id,sess)==="present")c++;});return c;}
+
+/* ---------- Register ---------- */
+var datePicker=document.getElementById("datePicker");
+var curSession="morning";
+datePicker.value=todayStr();
+
+function renderRegister(){
+  var ds=datePicker.value;
+  var d=parseD(ds);
+  var holBadge=document.getElementById("holBadge");
+  var listEl=document.getElementById("studentList");
+  if(isWeekend(d)){
+    holBadge.innerHTML='<span class="holiday-tag">Weekend — no marking</span>';
+    listEl.innerHTML="";updateCounts(0,0,0);return;
+  }
+  holBadge.innerHTML=holidays[ds]?('<span class="holiday-tag">Holiday: '+(holidays[ds].label||"declared holiday")+'</span>'):"";
+  listEl.innerHTML="";
+  [["M","Males"],["F","Females"]].forEach(function(pair){
+    var h=document.createElement("h2");h.textContent=pair[1];listEl.appendChild(h);
+    var n=1;
+    sortedStudents().filter(function(s){return s.gender===pair[0];}).forEach(function(st){
+      var status=getStatus(ds,st.id,curSession);
+      var row=document.createElement("div");row.className="stud-row";
+      var num=document.createElement("span");num.className="num";num.textContent=(n++)+".";
+      var nm=document.createElement("span");nm.className="name";nm.textContent=st.name;
+      var btn=document.createElement("button");btn.className="status-btn";btn.dataset.status=status;
+      btn.textContent=status==="present"?"Present":status==="absent"?"Absent":"Mark";
+      btn.addEventListener("click",function(){
+        var cur=getStatus(ds,st.id,curSession);
+        var next=cur==="unmarked"?"present":cur==="present"?"absent":"unmarked";
+        setStatus(ds,st.id,curSession,next);renderRegister();
+      });
+      row.appendChild(num);row.appendChild(nm);row.appendChild(btn);listEl.appendChild(row);
+    });
+  });
+  var p=0,a=0,u=0;
+  students.forEach(function(st){var s=getStatus(ds,st.id,curSession);if(s==="present")p++;else if(s==="absent")a++;else u++;});
+  updateCounts(p,a,u);
+}
+function updateCounts(p,a,u){document.getElementById("cntP").textContent=p;document.getElementById("cntA").textContent=a;document.getElementById("cntU").textContent=u;}
+document.getElementById("prevDay").addEventListener("click",function(){datePicker.value=dstr(addDays(parseD(datePicker.value),-1));renderRegister();});
+document.getElementById("nextDay").addEventListener("click",function(){datePicker.value=dstr(addDays(parseD(datePicker.value),1));renderRegister();});
+datePicker.addEventListener("change",renderRegister);
+document.getElementById("sessMorning").addEventListener("click",function(){curSession="morning";this.classList.add("on");document.getElementById("sessAfternoon").classList.remove("on");renderRegister();});
+document.getElementById("sessAfternoon").addEventListener("click",function(){curSession="afternoon";this.classList.add("on");document.getElementById("sessMorning").classList.remove("on");renderRegister();});
+document.getElementById("markAllP").addEventListener("click",function(){var ds=datePicker.value;students.forEach(function(st){setStatus(ds,st.id,curSession,"present");});renderRegister();});
+var clearArmed=false,clearTimer=null;
+var clearBtn=document.getElementById("clearDay");
+clearBtn.addEventListener("click",function(){
+  if(!clearArmed){clearArmed=true;clearBtn.textContent="Tap again to confirm";clearTimer=setTimeout(function(){clearArmed=false;clearBtn.textContent="Clear this session";},3000);return;}
+  clearTimeout(clearTimer);clearArmed=false;clearBtn.textContent="Clear this session";
+  var ds=datePicker.value;students.forEach(function(st){setStatus(ds,st.id,curSession,"unmarked");});renderRegister();
+});
+
+/* ---------- Weekly ---------- */
+var weekSelect=document.getElementById("weekSelect");
+for(var w=1;w<=WEEKS;w++){var opt=document.createElement("option");opt.value=w;var wd=weekDates(w);opt.textContent="Week "+w+" ("+wd[0].slice(5)+" – "+wd[4].slice(5)+")";weekSelect.appendChild(opt);}
+function currentWeekIndex(){var t=todayStr();for(var w=1;w<=WEEKS;w++){if(t<=weekDates(w)[4])return w;}return WEEKS;}
+weekSelect.value=currentWeekIndex();
+weekSelect.addEventListener("change",renderWeekly);
+function renderWeekly(){
+  var w=parseInt(weekSelect.value,10);var dates=weekDates(w);var out=document.getElementById("weeklyOut");
+  var html="<table><thead><tr><th>Day</th><th>Morning</th><th>Afternoon</th><th>Total</th></tr></thead><tbody>";
+  var wkM=0,wkA=0,schoolDays=0;
+  dates.forEach(function(ds){
+    var d=parseD(ds);var label=d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+    if(holidays[ds]){html+="<tr><td>"+label+"</td><td colspan='3'><span class='holiday-tag'>Holiday"+(holidays[ds].label?": "+holidays[ds].label:"")+"</span></td></tr>";return;}
+    if(ds>todayStr()){html+="<tr><td>"+label+"</td><td colspan='3' style='color:var(--soft)'>Not yet occurred</td></tr>";return;}
+    var m=sessionTally(ds,"morning"),a=sessionTally(ds,"afternoon");wkM+=m;wkA+=a;schoolDays++;
+    html+="<tr><td>"+label+"</td><td>"+m+"</td><td>"+a+"</td><td>"+(m+a)+"</td></tr>";
+  });
+  var expected=schoolDays*students.length*2,actual=wkM+wkA;
+  var pct=expected>0?((actual/expected)*100).toFixed(1):"0.0";
+  html+="</tbody><tfoot><tr><td>Week total</td><td>"+wkM+"</td><td>"+wkA+"</td><td>"+actual+"</td></tr></tfoot></table>";
+  html+="<p class='note'>School days so far: "+schoolDays+". Expected: "+expected+".<br><b style='color:var(--text)'>Week "+w+": "+actual+" / "+expected+" = "+pct+"%</b></p>";
+  html+="<h2>Per-student — Week "+w+"</h2><table><thead><tr><th>#</th><th>Name</th><th>Points</th></tr></thead><tbody>";
+  var maxPts=schoolDays*2;
+  sortedStudents().forEach(function(st,i){
+    var pts=0;dates.forEach(function(ds){if(isSchoolDay(ds))pts+=dayPoints(ds,st.id);});
+    html+="<tr><td>"+(i+1)+"</td><td>"+st.name+"</td><td>"+pts+" / "+maxPts+"</td></tr>";
+  });
+  html+="</tbody></table>";out.innerHTML=html;
+}
+
+/* ---------- Term ---------- */
+function renderTerm(){
+  var out=document.getElementById("termOut");
+  var allSchoolDays=[];
+  for(var w=1;w<=WEEKS;w++){weekDates(w).forEach(function(ds){if(isSchoolDay(ds))allSchoolDays.push(ds);});}
+  var maxPts=allSchoolDays.length*2,grandActual=0;
+  var html="<p class='note'>School days counted so far: "+allSchoolDays.length+" (weekends/holidays excluded, future dates not yet counted).</p>";
+  html+="<table><thead><tr><th>#</th><th>Name</th><th>Total</th><th>%</th></tr></thead><tbody>";
+  sortedStudents().forEach(function(st,i){
+    var pts=0;allSchoolDays.forEach(function(ds){pts+=dayPoints(ds,st.id);});grandActual+=pts;
+    var pct=maxPts>0?((pts/maxPts)*100).toFixed(1):"0.0";
+    html+="<tr><td>"+(i+1)+"</td><td>"+st.name+"</td><td>"+pts+" / "+maxPts+"</td><td>"+pct+"%</td></tr>";
+  });
+  var grandExpected=maxPts*students.length;
+  var grandPct=grandExpected>0?((grandActual/grandExpected)*100).toFixed(1):"0.0";
+  html+="</tbody><tfoot><tr><td colspan='2'>Grand total</td><td>"+grandActual+" / "+grandExpected+"</td><td>"+grandPct+"%</td></tr></tfoot></table>";
+  out.innerHTML=html;
+}
+
+/* ---------- Students (DB) ---------- */
+var fGender="M";
+document.getElementById("fGenM").addEventListener("click",function(){fGender="M";this.classList.add("on");document.getElementById("fGenF").classList.remove("on");});
+document.getElementById("fGenF").addEventListener("click",function(){fGender="F";this.classList.add("on");document.getElementById("fGenM").classList.remove("on");});
+document.getElementById("fAutoParent").addEventListener("click",function(){document.getElementById("fParent").value=autoParent(document.getElementById("fName").value);});
+function clearForm(){
+  document.getElementById("fId").value="";document.getElementById("fName").value="";
+  document.getElementById("fAdm").value="";document.getElementById("fDob").value="";
+  document.getElementById("fParent").value="";document.getElementById("fAddr").value="";
+  document.getElementById("fPhone").value="";document.getElementById("fReligion").value="Christianity";
+  fGender="M";document.getElementById("fGenM").classList.add("on");document.getElementById("fGenF").classList.remove("on");
+  document.getElementById("formTitle").textContent="Add a student";
+}
+function loadForm(st){
+  document.getElementById("fId").value=st.id;document.getElementById("fName").value=st.name;
+  document.getElementById("fAdm").value=st.admissionNo||"";document.getElementById("fDob").value=st.dob||"";
+  document.getElementById("fParent").value=st.parentName||"";document.getElementById("fAddr").value=st.address||"";
+  document.getElementById("fPhone").value=st.phone||"";document.getElementById("fReligion").value=st.religion||"Christianity";
+  fGender=st.gender;
+  document.getElementById("fGenM").classList.toggle("on",fGender==="M");
+  document.getElementById("fGenF").classList.toggle("on",fGender==="F");
+  document.getElementById("formTitle").textContent="Edit student";
+}
+document.getElementById("fCancel").addEventListener("click",clearForm);
+document.getElementById("fSave").addEventListener("click",function(){
+  var name=document.getElementById("fName").value.trim();
+  if(!name){alert("Enter the student's name.");return;}
+  var id=document.getElementById("fId").value;
+  var rec={id:id||genId(),name:name,gender:fGender,
+    admissionNo:document.getElementById("fAdm").value.trim(),
+    dob:document.getElementById("fDob").value,
+    parentName:document.getElementById("fParent").value.trim()||autoParent(name),
+    address:document.getElementById("fAddr").value.trim(),
+    phone:document.getElementById("fPhone").value.trim(),
+    religion:document.getElementById("fReligion").value};
+  if(id){var idx=students.findIndex(function(s){return s.id===id;});if(idx>-1)students[idx]=rec;}
+  else{students.push(rec);}
+  save(KEY_STU,students);clearForm();renderStudents();renderRegister();
+});
+var delArmed={};
+function renderStudents(){
+  ["M","F"].forEach(function(g){
+    var el=document.getElementById(g==="M"?"stuListM":"stuListF");el.innerHTML="";
+    sortedStudents().filter(function(s){return s.gender===g;}).forEach(function(st){
+      var item=document.createElement("div");item.className="stu-item";
+      var left=document.createElement("span");
+      left.textContent=st.name+(st.admissionNo?" · "+st.admissionNo:"");
+      left.style.flex="1";
+      left.addEventListener("click",function(){loadForm(st);window.scrollTo({top:0,behavior:"smooth"});});
+      var btn=document.createElement("button");btn.textContent="Remove";
+      btn.addEventListener("click",function(){
+        if(!delArmed[st.id]){delArmed[st.id]=true;btn.textContent="Confirm?";setTimeout(function(){delArmed[st.id]=false;btn.textContent="Remove";},3000);return;}
+        students=students.filter(function(s){return s.id!==st.id;});save(KEY_STU,students);renderStudents();renderRegister();
+      });
+      item.appendChild(left);item.appendChild(btn);el.appendChild(item);
+    });
+  });
+}
+
+/* ---------- Holidays ---------- */
+function renderHolidays(){
+  var out=document.getElementById("holList");var keys=Object.keys(holidays).sort();
+  if(keys.length===0){out.innerHTML="<p class='note'>No holidays declared yet.</p>";return;}
+  out.innerHTML="";
+  keys.forEach(function(ds){
+    var item=document.createElement("div");item.className="hol-item";
+    var d=parseD(ds);var lbl=d.toLocaleDateString(undefined,{weekday:"short",year:"numeric",month:"short",day:"numeric"});
+    item.innerHTML="<span>"+lbl+(holidays[ds].label?" — "+holidays[ds].label:"")+"</span>";
+    var btn=document.createElement("button");btn.textContent="Remove";
+    btn.addEventListener("click",function(){delete holidays[ds];save(KEY_HOL,holidays);renderHolidays();renderRegister();});
+    item.appendChild(btn);out.appendChild(item);
+  });
+}
+document.getElementById("addHoliday").addEventListener("click",function(){
+  var ds=document.getElementById("holDate").value;if(!ds)return;
+  var label=document.getElementById("holLabel").value.trim();
+  holidays[ds]={label:label};save(KEY_HOL,holidays);
+  document.getElementById("holLabel").value="";renderHolidays();renderRegister();
+});
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tabbtn").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    document.querySelectorAll(".tabbtn").forEach(function(b){b.classList.remove("active");});
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");});
+    btn.classList.add("active");document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+    if(btn.dataset.tab==="weekly")renderWeekly();
+    if(btn.dataset.tab==="term")renderTerm();
+    if(btn.dataset.tab==="students")renderStudents();
+    if(btn.dataset.tab==="holidays")renderHolidays();
+  });
+});
+
+if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){
+  navigator.serviceWorker.register("service-worker.js").catch(function(){});
+}
+clearForm();
+renderRegister();
+})();
+</script>
+</body>
+</html>
