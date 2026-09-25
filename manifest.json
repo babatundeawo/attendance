@@ -1,13 +1,15 @@
 {
   "name": "Attendance Register",
   "short_name": "Attendance",
+  "description": "Daily AM/PM attendance register with weekly and term reports, synced live to Firebase.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F5F2EA",
-  "theme_color": "#16283F",
+  "background_color": "#F6F3EC",
+  "theme_color": "#14243B",
   "icons": [
     {"src":"icon.svg","sizes":"192x192","type":"image/svg+xml","purpose":"any"},
-    {"src":"icon.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any"}
+    {"src":"icon.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any"},
+    {"src":"icon.svg","sizes":"192x192","type":"image/svg+xml","purpose":"maskable"}
   ]
 }

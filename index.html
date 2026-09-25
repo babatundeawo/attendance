@@ -8,20 +8,47 @@
     />
     <title>Attendance Register</title>
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#16283F" />
+    <meta name="theme-color" content="#14243B" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
-        --paper: #f5f2ea;
-        --line: #dad3bf;
+        --paper: #f6f3ec;
+        --paper-raised: #ffffff;
+        --line: #e2dcc9;
+        --line-soft: #ece7d9;
         --ink: #1f3a5f;
-        --ink-deep: #16283f;
-        --text: #241f17;
-        --soft: #6b6455;
-        --present: #3f6c51;
-        --present-bg: #e4eee4;
-        --absent: #a63d40;
-        --absent-bg: #f3e2e1;
+        --ink-deep: #12233b;
+        --ink-tint: #eef2f7;
+        --text: #23201a;
+        --soft: #756e5c;
+        --present: #2f6b47;
+        --present-bg: #e3efe4;
+        --absent: #a13c3f;
+        --absent-bg: #f6e5e3;
+        --accent: #a9793a;
+        --accent-bg: #f5ecdc;
         --card: #ffffff;
+        --overlay: rgba(18, 26, 38, 0.5);
+        --shadow-sm: 0 1px 2px rgba(23, 35, 56, 0.06),
+          0 1px 1px rgba(23, 35, 56, 0.04);
+        --shadow-md: 0 6px 16px -6px rgba(23, 35, 56, 0.18),
+          0 2px 6px -2px rgba(23, 35, 56, 0.1);
+        --shadow-lg: 0 20px 44px -14px rgba(18, 26, 38, 0.32),
+          0 8px 18px -8px rgba(18, 26, 38, 0.16);
+        --r-sm: 9px;
+        --r-md: 13px;
+        --r-lg: 18px;
+        --r-xl: 24px;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+        --font-body: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+        --nav-h: 66px;
         box-sizing: border-box;
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -31,34 +58,60 @@
       }
       @media (prefers-color-scheme: dark) {
         :root:not([data-theme="light"]) {
-          --paper: #191712;
-          --line: #322d22;
-          --ink: #7fa0c9;
-          --ink-deep: #9ebbdd;
+          --paper: #14120d;
+          --paper-raised: #1c1a14;
+          --line: #322c1f;
+          --line-soft: #262215;
+          --ink: #89a9d1;
+          --ink-deep: #0f1c2e;
+          --ink-tint: #1a2636;
           --text: #ece6d8;
-          --soft: #a69c86;
-          --present: #7fbe93;
-          --present-bg: #1e2b21;
-          --absent: #e28c8e;
-          --absent-bg: #2e1c1c;
-          --card: #221f18;
+          --soft: #a89e87;
+          --present: #7fc192;
+          --present-bg: #16261b;
+          --absent: #e08e8f;
+          --absent-bg: #2c1a1a;
+          --accent: #d9ac6b;
+          --accent-bg: #2c2314;
+          --card: #201d16;
+          --overlay: rgba(4, 7, 12, 0.65);
+          --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+          --shadow-md: 0 6px 18px -6px rgba(0, 0, 0, 0.55);
+          --shadow-lg: 0 22px 48px -16px rgba(0, 0, 0, 0.65);
         }
       }
       :root[data-theme="dark"] {
-        --paper: #191712;
-        --line: #322d22;
-        --ink: #7fa0c9;
-        --ink-deep: #9ebbdd;
+        --paper: #14120d;
+        --paper-raised: #1c1a14;
+        --line: #322c1f;
+        --line-soft: #262215;
+        --ink: #89a9d1;
+        --ink-deep: #0f1c2e;
+        --ink-tint: #1a2636;
         --text: #ece6d8;
-        --soft: #a69c86;
-        --present: #7fbe93;
-        --present-bg: #1e2b21;
-        --absent: #e28c8e;
-        --absent-bg: #2e1c1c;
-        --card: #221f18;
+        --soft: #a89e87;
+        --present: #7fc192;
+        --present-bg: #16261b;
+        --absent: #e08e8f;
+        --absent-bg: #2c1a1a;
+        --accent: #d9ac6b;
+        --accent-bg: #2c2314;
+        --card: #201d16;
+        --overlay: rgba(4, 7, 12, 0.65);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 6px 18px -6px rgba(0, 0, 0, 0.55);
+        --shadow-lg: 0 22px 48px -16px rgba(0, 0, 0, 0.65);
       }
       * {
         box-sizing: border-box;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          transition-duration: 0.001ms !important;
+        }
       }
       html,
       body {
@@ -66,72 +119,256 @@
         height: 100%;
         background: var(--paper);
         color: var(--text);
-        font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
       }
       body {
         display: flex;
         flex-direction: column;
+        min-height: 100dvh;
         min-height: 100%;
+        overflow: hidden;
       }
       h1,
-      h2 {
-        font-family: Georgia, "Times New Roman", serif;
+      h2,
+      h3 {
+        font-family: var(--font-display);
+        letter-spacing: -0.01em;
       }
       h1 {
-        font-size: 1.2rem;
-        margin: 0 0 3px;
+        font-size: 1.28rem;
+        font-weight: 600;
+        margin: 0;
+        color: #fff;
       }
       h2 {
-        font-size: 0.9rem;
-        margin: 14px 0 6px;
+        font-size: 0.98rem;
+        font-weight: 600;
+        margin: 18px 0 8px;
         color: var(--ink);
-      }
-      header {
-        padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 8px;
-        background: var(--ink-deep);
-        color: #f5f2ea;
-      }
-      .sub {
-        font-size: 0.75rem;
-        color: #c7d3e2;
-        margin: 0;
-      }
-      #syncStatus {
-        font-size: 0.7rem;
-        margin-top: 4px;
-      }
-      nav {
         display: flex;
-        background: var(--ink-deep);
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: center;
+        gap: 7px;
+      }
+      h2 .count {
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 0.66rem;
+        color: var(--soft);
+        background: var(--ink-tint);
+        padding: 2px 7px;
+        border-radius: 20px;
+      }
+      a {
+        color: inherit;
+      }
+      button {
+        font-family: var(--font-body);
+      }
+      ::selection {
+        background: var(--ink);
+        color: #fff;
+      }
+      :focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* ---------- Header ---------- */
+      header {
+        position: relative;
+        flex-shrink: 0;
+        padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 14px;
+        background: linear-gradient(150deg, var(--ink-deep), #1c3454 78%);
+        color: #f5f2ea;
+        box-shadow: var(--shadow-md);
+        z-index: 5;
+      }
+      header::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          120% 140% at 8% -20%,
+          rgba(255, 255, 255, 0.14),
+          transparent 55%
+        );
+        pointer-events: none;
+      }
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+      }
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .brand-mark svg {
+        width: 19px;
+        height: 19px;
+      }
+      .brand-text {
+        flex: 1;
+        min-width: 0;
+      }
+      .meta-row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
         flex-wrap: wrap;
       }
-      nav button {
+      .sub {
+        font-size: 0.72rem;
+        color: #c7d3e2;
+        margin: 0;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+      }
+      .sync-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        padding: 3px 9px 3px 7px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #dfe7f1;
+      }
+      .sync-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #8fd6a3;
+        box-shadow: 0 0 0 0 rgba(143, 214, 163, 0.6);
+        animation: pulseDot 2.2s var(--ease) infinite;
+      }
+      .sync-dot.off {
+        background: #e2a15a;
+        animation: pulseDotOff 2.2s var(--ease) infinite;
+      }
+      @keyframes pulseDot {
+        0% {
+          box-shadow: 0 0 0 0 rgba(143, 214, 163, 0.55);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(143, 214, 163, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(143, 214, 163, 0);
+        }
+      }
+      @keyframes pulseDotOff {
+        0% {
+          box-shadow: 0 0 0 0 rgba(226, 161, 90, 0.55);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(226, 161, 90, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(226, 161, 90, 0);
+        }
+      }
+
+      /* ---------- Bottom tab bar ---------- */
+      nav {
+        position: relative;
+        flex-shrink: 0;
+        display: flex;
+        background: var(--ink-deep);
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+        box-shadow: 0 -8px 22px -10px rgba(0, 0, 0, 0.4);
+        z-index: 20;
+        order: 3;
+      }
+      .nav-indicator {
+        position: absolute;
+        top: 6px;
+        height: calc(100% - 12px - env(safe-area-inset-bottom, 0px));
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.1);
+        transition: left 0.32s var(--ease), width 0.32s var(--ease);
+        pointer-events: none;
+      }
+      nav button.tabbtn {
+        position: relative;
         flex: 1;
-        min-width: 60px;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
         background: none;
         border: none;
-        color: #b9c6d8;
-        padding: 9px 2px;
-        font-size: 0.66rem;
+        color: #94a5bc;
+        padding: 8px 2px 6px;
+        font-size: 0.62rem;
         font-weight: 600;
+        letter-spacing: 0.01em;
         cursor: pointer;
+        border-radius: var(--r-md);
+        transition: color 0.2s var(--ease), transform 0.15s var(--ease);
+        z-index: 1;
       }
-      nav button.active {
+      nav button.tabbtn svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        transition: transform 0.2s var(--ease);
+      }
+      nav button.tabbtn.active {
         color: #fff;
-        border-bottom: 2px solid #fff;
       }
+      nav button.tabbtn.active svg {
+        transform: translateY(-1px) scale(1.04);
+      }
+      nav button.tabbtn:active {
+        transform: scale(0.94);
+      }
+
+      /* ---------- Main ---------- */
       main {
         flex: 1;
-        padding: 12px 14px 24px;
-        overflow-x: hidden;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 14px 14px 28px;
+        order: 2;
       }
       .tab {
         display: none;
       }
       .tab.active {
         display: block;
+        animation: fadeUp 0.28s var(--ease);
       }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ---------- Shared components ---------- */
       .row-flex {
         display: flex;
         align-items: center;
@@ -139,101 +376,350 @@
         margin-bottom: 10px;
         flex-wrap: wrap;
       }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-sm);
+      }
       button.chip {
         background: var(--card);
         border: 1px solid var(--line);
         color: var(--text);
-        padding: 7px 12px;
-        border-radius: 8px;
+        padding: 8px 13px;
+        border-radius: var(--r-sm);
         font-size: 0.78rem;
         font-weight: 600;
         cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.12s var(--ease), box-shadow 0.12s var(--ease),
+          background 0.12s var(--ease), border-color 0.12s var(--ease);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      button.chip svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      button.chip:hover {
+        border-color: var(--ink);
+      }
+      button.chip:active {
+        transform: scale(0.96);
       }
       button.chip.on {
         background: var(--ink-deep);
         color: #fff;
         border-color: var(--ink-deep);
       }
+      button.chip.danger.armed {
+        background: var(--absent);
+        color: #fff;
+        border-color: var(--absent);
+      }
+      button.chip.ghost {
+        background: transparent;
+        box-shadow: none;
+      }
+      button.icon-btn {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--r-sm);
+        border: 1px solid var(--line);
+        background: var(--card);
+        color: var(--text);
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.12s var(--ease), background 0.12s var(--ease);
+        flex-shrink: 0;
+      }
+      button.icon-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      button.icon-btn:active {
+        transform: scale(0.92);
+      }
       select,
       input[type="date"],
       input[type="text"],
-      input[type="tel"] {
-        padding: 7px 8px;
-        border-radius: 8px;
+      input[type="tel"],
+      input[type="search"] {
+        padding: 9px 11px;
+        border-radius: var(--r-sm);
         border: 1px solid var(--line);
         background: var(--card);
         color: var(--text);
         font-size: 0.85rem;
         width: 100%;
+        font-family: var(--font-body);
+        transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
       }
-      .summary {
-        display: flex;
-        gap: 8px;
-        margin: 8px 0;
+      select:focus,
+      input:focus {
+        border-color: var(--ink);
+        box-shadow: 0 0 0 3px var(--ink-tint);
+        outline: none;
       }
-      .pill {
+      .search-wrap {
+        position: relative;
         flex: 1;
+        min-width: 140px;
+      }
+      .search-wrap svg {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 15px;
+        height: 15px;
+        color: var(--soft);
+        pointer-events: none;
+      }
+      .search-wrap input {
+        padding-left: 32px;
+      }
+
+      /* date bar */
+      .date-bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .date-display {
+        flex: 1;
+        position: relative;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        box-shadow: var(--shadow-sm);
+        padding: 8px 12px;
         text-align: center;
-        padding: 7px 4px;
-        border-radius: 9px;
-        font-size: 0.68rem;
+        cursor: pointer;
+      }
+      .date-display .dow {
+        font-size: 0.62rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--soft);
+        font-weight: 700;
+      }
+      .date-display .dnum {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
         font-weight: 600;
       }
-      .pill .n {
-        display: block;
+      .date-display input[type="date"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .today-btn {
+        font-size: 0.66rem;
+      }
+
+      /* stat rings */
+      .stats-row {
+        display: flex;
+        gap: 8px;
+        margin: 4px 0 12px;
+      }
+      .ring-card {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-sm);
+      }
+      .ring-card svg {
+        flex-shrink: 0;
+      }
+      .ring-track {
+        stroke: var(--line-soft);
+      }
+      .ring-val {
+        stroke: var(--present);
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.6s var(--ease);
+      }
+      .ring-label {
+        font-size: 0.63rem;
+        color: var(--soft);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+      .ring-num {
+        font-family: var(--font-display);
         font-size: 1.05rem;
-        font-family: Georgia, serif;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
       }
-      .pill.present {
-        background: var(--present-bg);
-        color: var(--present);
+      .ring-num small {
+        font-family: var(--font-body);
+        font-size: 0.62rem;
+        color: var(--soft);
+        font-weight: 600;
       }
+
+      .pill-note {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 5px 10px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+      }
+      .holiday-tag,
+      .pill-note.holiday {
+        background: var(--absent-bg);
+        color: var(--absent);
+      }
+      .pill-note.weekend {
+        background: var(--ink-tint);
+        color: var(--soft);
+      }
+      .holiday-tag {
+        font-size: 0.66rem;
+        padding: 2px 7px;
+        border-radius: 6px;
+      }
+
+      /* register head + rows */
       .reg-head {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 4px 10px;
-        font-size: 0.68rem;
+        padding: 2px 12px 6px;
+        font-size: 0.63rem;
         font-weight: 700;
         color: var(--soft);
         text-transform: uppercase;
+        letter-spacing: 0.04em;
+        position: sticky;
+        top: 0;
+        background: var(--paper);
+        z-index: 2;
       }
       .reg-head .amL,
       .reg-head .pmL {
-        width: 46px;
+        width: 50px;
         text-align: center;
       }
       .stud-row {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         padding: 9px 10px;
-        margin: 4px 0;
+        margin: 6px 0;
         background: var(--card);
         border: 1px solid var(--line);
-        border-radius: 9px;
+        border-radius: var(--r-md);
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.15s var(--ease), transform 0.15s var(--ease);
       }
-      .stud-row .num {
-        font-size: 0.7rem;
-        color: var(--soft);
-        width: 18px;
+      .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.66rem;
+        font-weight: 700;
+        color: #fff;
         flex-shrink: 0;
+        font-family: var(--font-display);
+      }
+      .avatar.g-M {
+        background: linear-gradient(145deg, #3a6ea5, #1f3a5f);
+      }
+      .avatar.g-F {
+        background: linear-gradient(145deg, #b9678a, #8a3d5e);
+      }
+      .stud-row .name-wrap {
+        flex: 1;
+        min-width: 0;
       }
       .stud-row .name {
-        flex: 1;
-        font-size: 0.88rem;
-        font-weight: 500;
+        font-size: 0.87rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
+      .stud-row .adm {
+        font-size: 0.66rem;
+        color: var(--soft);
+      }
+
+      /* toggle switch */
       .tick {
-        width: 46px;
+        width: 50px;
         display: flex;
         justify-content: center;
+        flex-shrink: 0;
       }
-      .tick input {
-        width: 26px;
-        height: 26px;
-        accent-color: var(--present);
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 24px;
+        flex-shrink: 0;
       }
+      .switch input {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: var(--line-soft);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+      }
+      .switch input::before {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        transition: transform 0.22s var(--ease);
+      }
+      .switch input:checked {
+        background: var(--present);
+        border-color: var(--present);
+      }
+      .switch input:checked::before {
+        transform: translateX(16px);
+      }
+      .switch input:active::before {
+        width: 21px;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -243,141 +729,572 @@
       th,
       td {
         text-align: left;
-        padding: 6px 5px;
+        padding: 8px 6px;
         border-bottom: 1px solid var(--line);
       }
       th {
         color: var(--soft);
-        font-weight: 600;
-        font-size: 0.66rem;
+        font-weight: 700;
+        font-size: 0.62rem;
         text-transform: uppercase;
+        letter-spacing: 0.03em;
+        position: sticky;
+        top: 0;
+        background: var(--paper);
+      }
+      tbody tr:nth-child(even) {
+        background: var(--line-soft);
+      }
+      tbody tr {
+        transition: background 0.15s var(--ease);
       }
       tfoot td {
         font-weight: 700;
         border-top: 2px solid var(--ink);
+        font-variant-numeric: tabular-nums;
       }
+      td.num-col,
+      th.num-col {
+        font-variant-numeric: tabular-nums;
+      }
+      .table-wrap {
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        overflow: hidden;
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+        max-height: 360px;
+        overflow-y: auto;
+        margin-bottom: 6px;
+      }
+      .table-wrap table {
+        margin-bottom: 0;
+      }
+      .table-wrap th,
+      .table-wrap td {
+        padding: 8px 10px;
+      }
+
+      /* mini bar */
+      .mini-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .mini-bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 6px;
+        background: var(--line-soft);
+        overflow: hidden;
+        min-width: 40px;
+      }
+      .mini-bar > span {
+        display: block;
+        height: 100%;
+        border-radius: 6px;
+        background: var(--present);
+        transition: width 0.5s var(--ease);
+      }
+      .mini-bar.low > span {
+        background: var(--absent);
+      }
+      .mini-pct {
+        font-size: 0.68rem;
+        font-weight: 700;
+        width: 38px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+      .tag.risk {
+        background: var(--absent-bg);
+        color: var(--absent);
+      }
+      .tag.star {
+        background: var(--accent-bg);
+        color: var(--accent);
+      }
+
+      /* stat overview cards */
+      .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-sm);
+        padding: 12px 8px;
+        text-align: center;
+      }
+      .stat-card .v {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        color: var(--ink);
+      }
+      .stat-card .l {
+        font-size: 0.6rem;
+        color: var(--soft);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin-top: 2px;
+      }
+
       .holiday-tag {
         background: var(--absent-bg);
         color: var(--absent);
-        font-size: 0.66rem;
-        padding: 2px 7px;
-        border-radius: 6px;
       }
       .hol-item,
       .stu-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 9px 10px;
+        gap: 8px;
+        padding: 10px 12px;
         background: var(--card);
         border: 1px solid var(--line);
-        border-radius: 8px;
-        margin-bottom: 6px;
+        border-radius: var(--r-md);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 7px;
         font-size: 0.85rem;
       }
-      .hol-item button,
-      .stu-item button {
+      .hol-item .date-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: var(--r-sm);
+        background: var(--ink-tint);
+        color: var(--ink);
+        flex-shrink: 0;
+      }
+      .hol-item .date-badge b {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        line-height: 1;
+      }
+      .hol-item .date-badge span {
+        font-size: 0.52rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .hol-item .hol-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .hol-item .hol-info .d1 {
+        font-weight: 600;
+        font-size: 0.82rem;
+      }
+      .hol-item .hol-info .d2 {
+        font-size: 0.7rem;
+        color: var(--soft);
+      }
+      .stu-item .left {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+      .stu-item .left .txt {
+        min-width: 0;
+      }
+      .stu-item .left .txt .n {
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .stu-item .left .txt .a {
+        font-size: 0.68rem;
+        color: var(--soft);
+      }
+      .hol-item button.rm,
+      .stu-item button.rm {
         background: var(--absent-bg);
         color: var(--absent);
         border: none;
-        border-radius: 6px;
-        padding: 5px 10px;
-        font-size: 0.72rem;
+        border-radius: var(--r-sm);
+        padding: 6px 11px;
+        font-size: 0.7rem;
         font-weight: 700;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: transform 0.12s var(--ease);
+      }
+      .hol-item button.rm:active,
+      .stu-item button.rm:active {
+        transform: scale(0.94);
       }
       .note {
         font-size: 0.75rem;
         color: var(--soft);
         margin: 6px 0 14px;
+        line-height: 1.5;
       }
+      .empty-state {
+        text-align: center;
+        padding: 30px 14px;
+        color: var(--soft);
+      }
+      .empty-state svg {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 8px;
+        opacity: 0.5;
+      }
+      .empty-state p {
+        font-size: 0.82rem;
+        margin: 0;
+      }
+
       .field {
-        margin-bottom: 10px;
+        margin-bottom: 12px;
       }
       .field label {
         display: block;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         color: var(--soft);
-        margin-bottom: 3px;
+        margin-bottom: 4px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+      .field .err {
+        display: none;
+        color: var(--absent);
+        font-size: 0.68rem;
+        margin-top: 4px;
         font-weight: 600;
+      }
+      .field.invalid input {
+        border-color: var(--absent);
+      }
+      .field.invalid .err {
+        display: block;
       }
       .form-card {
         background: var(--card);
         border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 14px;
-        margin-bottom: 16px;
+        border-radius: var(--r-lg);
+        padding: 16px;
+        margin-bottom: 18px;
+        box-shadow: var(--shadow-sm);
       }
+      .form-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .form-card-head h2 {
+        margin: 0;
+      }
+
       footer {
-        padding: 8px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-        text-align: center;
-        font-size: 0.64rem;
+        display: none;
+      }
+
+      /* toast */
+      #toastContainer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px) + 12px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        z-index: 60;
+        pointer-events: none;
+        padding: 0 14px;
+      }
+      .toast {
+        background: var(--ink-deep);
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 10px 16px;
+        border-radius: 30px;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: toastIn 0.28s var(--ease);
+        max-width: 100%;
+      }
+      .toast.error {
+        background: var(--absent);
+      }
+      .toast.leave {
+        animation: toastOut 0.22s var(--ease) forwards;
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes toastOut {
+        to {
+          opacity: 0;
+          transform: translateY(6px) scale(0.96);
+        }
+      }
+
+      /* modal */
+      #modalOverlay {
+        position: fixed;
+        inset: 0;
+        background: var(--overlay);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 80;
+        backdrop-filter: blur(2px);
+      }
+      #modalOverlay.show {
+        display: flex;
+        animation: overlayIn 0.2s var(--ease);
+      }
+      @keyframes overlayIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .modal-box {
+        background: var(--card);
+        width: 100%;
+        max-width: 420px;
+        border-radius: var(--r-xl) var(--r-xl) 0 0;
+        padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+        box-shadow: var(--shadow-lg);
+        animation: modalUp 0.28s var(--ease);
+      }
+      @media (min-width: 480px) {
+        #modalOverlay {
+          align-items: center;
+        }
+        .modal-box {
+          border-radius: var(--r-xl);
+        }
+      }
+      @keyframes modalUp {
+        from {
+          transform: translateY(24px);
+          opacity: 0;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      .modal-box h3 {
+        margin: 0 0 6px;
+        font-size: 1.05rem;
+      }
+      .modal-box p {
+        margin: 0 0 18px;
+        font-size: 0.85rem;
         color: var(--soft);
+        line-height: 1.5;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .modal-actions button {
+        flex: 1;
+        padding: 11px;
+        border-radius: var(--r-md);
+        font-size: 0.85rem;
+        font-weight: 700;
+        border: 1px solid var(--line);
+        background: var(--card);
+        color: var(--text);
+        cursor: pointer;
+      }
+      .modal-actions button.primary {
+        background: var(--absent);
+        border-color: var(--absent);
+        color: #fff;
+      }
+
+      /* print */
+      @media print {
+        header,
+        nav,
+        .row-flex button,
+        .date-bar button,
+        #toastContainer,
+        #modalOverlay,
+        .search-wrap,
+        button {
+          display: none !important;
+        }
+        main {
+          overflow: visible;
+          padding: 0;
+        }
+        body {
+          overflow: visible;
+          height: auto;
+          display: block;
+        }
+      }
+
+      @media (min-width: 700px) {
+        main {
+          max-width: 640px;
+          margin: 0 auto;
+          width: 100%;
+        }
+        header .brand-row,
+        header .meta-row {
+          max-width: 640px;
+          margin: 0 auto;
+        }
+        nav {
+          max-width: 640px;
+          margin: 0 auto;
+          width: 100%;
+          border-radius: var(--r-lg) var(--r-lg) 0 0;
+        }
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>Attendance Register</h1>
-      <p class="sub">Term: 14 Sep 2026 · 13 weeks</p>
-      <p id="syncStatus" class="sub">Connecting…</p>
+      <div class="brand-row">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="3" width="14" height="18" rx="2"></rect>
+            <path d="M9 3v3h6V3"></path>
+            <path d="M8.5 12.5l2 2 4-4.5"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Attendance Register</h1>
+        </div>
+      </div>
+      <div class="meta-row">
+        <p class="sub" id="metaLine">Term: 14 Sep 2026 · 13 weeks</p>
+        <span class="sync-pill"
+          ><span class="sync-dot" id="syncDot"></span
+          ><span id="syncStatus">Connecting</span></span
+        >
+      </div>
     </header>
-    <nav>
-      <button class="tabbtn active" data-tab="register">Register</button>
-      <button class="tabbtn" data-tab="weekly">Weekly</button>
-      <button class="tabbtn" data-tab="term">Term</button>
-      <button class="tabbtn" data-tab="students">Students</button>
-      <button class="tabbtn" data-tab="holidays">Holidays</button>
-    </nav>
+
     <main>
       <section class="tab active" id="tab-register">
-        <div class="row-flex">
-          <button class="chip" id="prevDay">‹ Prev</button>
-          <input type="date" id="datePicker" />
-          <button class="chip" id="nextDay">Next ›</button>
+        <div class="date-bar">
+          <button class="icon-btn" id="prevDay" aria-label="Previous day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="date-display" id="dateDisplayWrap">
+            <div class="dow" id="dateDow">Monday</div>
+            <div class="dnum" id="dateNum">14 Sep 2026</div>
+            <input type="date" id="datePicker" aria-label="Choose date" />
+          </div>
+          <button class="icon-btn" id="nextDay" aria-label="Next day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <button class="chip today-btn" id="todayBtn" type="button">Today</button>
         </div>
         <div id="holBadge"></div>
-        <div class="summary">
-          <div class="pill present">
-            <span class="n" id="cntAM">0</span>AM present
-          </div>
-          <div class="pill present">
-            <span class="n" id="cntPM">0</span>PM present
-          </div>
+        <div class="stats-row" id="ringStats"></div>
+        <div class="row-flex">
+          <button class="chip" id="markAllAM" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            All AM
+          </button>
+          <button class="chip" id="markAllPM" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            All PM
+          </button>
+          <button class="chip danger" id="clearDay" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m2 0l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            Clear day
+          </button>
         </div>
         <div class="row-flex">
-          <button class="chip" id="markAllAM">Tick all AM</button>
-          <button class="chip" id="markAllPM">Tick all PM</button>
-          <button class="chip" id="clearDay">Clear day</button>
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="registerSearch" placeholder="Search students…" />
+          </div>
         </div>
         <div class="reg-head">
-          <span style="width: 18px"></span><span style="flex: 1">Name</span
+          <span style="width: 30px"></span><span style="flex: 1">Name</span
           ><span class="amL">AM</span><span class="pmL">PM</span>
         </div>
         <div id="studentList"></div>
       </section>
+
       <section class="tab" id="tab-weekly">
         <div class="row-flex">
-          <label style="font-size: 0.85rem">Week: </label
-          ><select id="weekSelect"></select>
+          <button class="icon-btn" id="weekPrev" aria-label="Previous week">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <select id="weekSelect" style="flex: 1"></select>
+          <button class="icon-btn" id="weekNext" aria-label="Next week">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
         <div id="weeklyOut"></div>
       </section>
-      <section class="tab" id="tab-term"><div id="termOut"></div></section>
+
+      <section class="tab" id="tab-term">
+        <div id="termOut"></div>
+      </section>
+
       <section class="tab" id="tab-students">
         <div class="form-card">
-          <h2 style="margin-top: 0" id="formTitle">Add a student</h2>
+          <div class="form-card-head">
+            <h2 style="margin: 0" id="formTitle">Add a student</h2>
+          </div>
           <input type="hidden" id="fId" />
-          <div class="field">
+          <div class="field" id="fNameField">
             <label>Full name (Surname first)</label
             ><input
               type="text"
               id="fName"
               placeholder="e.g. ABRAHAM BLESSING"
             />
+            <div class="err">Please enter the student's name.</div>
           </div>
           <div class="field">
             <label>Gender</label>
-            <div class="row-flex">
+            <div class="row-flex" style="margin-bottom: 0">
               <button class="chip on" id="fGenM" type="button">Male</button
               ><button class="chip" id="fGenF" type="button">Female</button>
             </div>
@@ -390,7 +1307,7 @@
           </div>
           <div class="field">
             <label>Parent/guardian name</label>
-            <div class="row-flex">
+            <div class="row-flex" style="margin-bottom: 0">
               <input type="text" id="fParent" style="flex: 1" /><button
                 class="chip"
                 id="fAutoParent"
@@ -419,32 +1336,82 @@
               <option>Traditional</option>
             </select>
           </div>
-          <div class="row-flex">
-            <button class="chip on" id="fSave">Save student</button
-            ><button class="chip" id="fCancel">Cancel / New</button>
+          <div class="row-flex" style="margin-bottom: 0">
+            <button class="chip on" id="fSave" type="button">Save student</button
+            ><button class="chip ghost" id="fCancel" type="button">Cancel / New</button>
           </div>
         </div>
-        <h2 style="margin-top: 0">Male students</h2>
+        <div class="row-flex">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="studentsSearch" placeholder="Search students…" />
+          </div>
+          <button class="chip ghost" id="exportStudentsCsv" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+            Export CSV
+          </button>
+        </div>
+        <h2 id="hM">Male students <span class="count" id="cntM">0</span></h2>
         <div id="stuListM"></div>
-        <h2>Female students</h2>
+        <h2 id="hF">Female students <span class="count" id="cntF">0</span></h2>
         <div id="stuListF"></div>
       </section>
+
       <section class="tab" id="tab-holidays">
-        <div class="row-flex">
-          <input type="date" id="holDate" /><input
-            type="text"
-            id="holLabel"
-            placeholder="Reason (optional)"
-            style="flex: 1"
-          /><button class="chip on" id="addHoliday">Add</button>
+        <div class="form-card">
+          <div class="field" style="margin-bottom: 8px">
+            <label>Date</label>
+            <input type="date" id="holDate" />
+          </div>
+          <div class="field" style="margin-bottom: 10px">
+            <label>Reason (optional)</label>
+            <input type="text" id="holLabel" placeholder="e.g. Public holiday" />
+          </div>
+          <button class="chip on" id="addHoliday" type="button" style="width: 100%; justify-content: center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add holiday
+          </button>
         </div>
         <div id="holList"></div>
       </section>
     </main>
-    <footer>
-      Synced to your Firebase cloud database · works offline and syncs when back
-      online
-    </footer>
+
+    <nav>
+      <span class="nav-indicator" id="navIndicator"></span>
+      <button class="tabbtn active" data-tab="register" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="M8.5 12.5l2 2 4-4.5"/></svg>
+        <span>Register</span>
+      </button>
+      <button class="tabbtn" data-tab="weekly" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+        <span>Weekly</span>
+      </button>
+      <button class="tabbtn" data-tab="term" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V10m6 11V4m6 17v-7"/></svg>
+        <span>Term</span>
+      </button>
+      <button class="tabbtn" data-tab="students" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 19c0-3.3 2.9-5.3 6.5-5.3s6.5 2 6.5 5.3M16 8.2a3 3 0 110 6M21.5 19c0-2.6-2-4.4-4.7-5"/></svg>
+        <span>Students</span>
+      </button>
+      <button class="tabbtn" data-tab="holidays" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <span>Holidays</span>
+      </button>
+    </nav>
+
+    <div id="toastContainer" aria-live="polite"></div>
+
+    <div id="modalOverlay">
+      <div class="modal-box">
+        <h3 id="modalTitle">Are you sure?</h3>
+        <p id="modalMessage"></p>
+        <div class="modal-actions">
+          <button id="modalCancel" type="button">Cancel</button>
+          <button id="modalConfirm" class="primary" type="button">Confirm</button>
+        </div>
+      </div>
+    </div>
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -474,19 +1441,100 @@
       const db = getFirestore(app);
       enableIndexedDbPersistence(db).catch(function () {});
       var statusEl = document.getElementById("syncStatus");
+      var syncDot = document.getElementById("syncDot");
+      function setSyncUI(online) {
+        statusEl.textContent = online ? "Online · synced" : "Offline · will sync later";
+        syncDot.classList.toggle("off", !online);
+      }
       window.addEventListener("online", function () {
-        statusEl.textContent = "Online · synced";
+        setSyncUI(true);
+        toast("Back online — syncing changes");
       });
       window.addEventListener("offline", function () {
-        statusEl.textContent = "Offline · will sync later";
+        setSyncUI(false);
+        toast("You're offline — changes will sync later");
       });
-      statusEl.textContent = navigator.onLine
-        ? "Online · synced"
-        : "Offline · will sync later";
+      setSyncUI(navigator.onLine);
+
+      /* ---------- Toast ---------- */
+      function toast(msg, type) {
+        var wrap = document.getElementById("toastContainer");
+        var el = document.createElement("div");
+        el.className = "toast" + (type === "error" ? " error" : "");
+        el.textContent = msg;
+        wrap.appendChild(el);
+        setTimeout(function () {
+          el.classList.add("leave");
+          setTimeout(function () {
+            el.remove();
+          }, 220);
+        }, 2600);
+      }
+
+      /* ---------- Modal confirm ---------- */
+      var modalOverlay = document.getElementById("modalOverlay");
+      var modalTitle = document.getElementById("modalTitle");
+      var modalMessage = document.getElementById("modalMessage");
+      var modalConfirmBtn = document.getElementById("modalConfirm");
+      var modalCancelBtn = document.getElementById("modalCancel");
+      function confirmModal(title, message) {
+        return new Promise(function (resolve) {
+          modalTitle.textContent = title;
+          modalMessage.textContent = message;
+          modalOverlay.classList.add("show");
+          function cleanup(result) {
+            modalOverlay.classList.remove("show");
+            modalConfirmBtn.removeEventListener("click", onYes);
+            modalCancelBtn.removeEventListener("click", onNo);
+            modalOverlay.removeEventListener("click", onOverlay);
+            resolve(result);
+          }
+          function onYes() {
+            cleanup(true);
+          }
+          function onNo() {
+            cleanup(false);
+          }
+          function onOverlay(e) {
+            if (e.target === modalOverlay) cleanup(false);
+          }
+          modalConfirmBtn.addEventListener("click", onYes);
+          modalCancelBtn.addEventListener("click", onNo);
+          modalOverlay.addEventListener("click", onOverlay);
+        });
+      }
+
+      /* ---------- CSV export ---------- */
+      function downloadCsv(filename, rows) {
+        var csv = rows
+          .map(function (r) {
+            return r
+              .map(function (v) {
+                v = v === undefined || v === null ? "" : String(v);
+                if (/[",\n]/.test(v)) v = '"' + v.replace(/"/g, '""') + '"';
+                return v;
+              })
+              .join(",");
+          })
+          .join("\r\n");
+        var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () {
+          URL.revokeObjectURL(url);
+        }, 1000);
+        toast("Downloaded " + filename);
+      }
 
       var students = [],
         attendance = {},
-        holidays = {};
+        holidays = {},
+        loaded = { students: false, attendance: false, holidays: false };
       var TERM_START = "2026-09-14",
         WEEKS = 13;
 
@@ -506,6 +1554,12 @@
         return students.slice().sort(function (a, b) {
           return a.name.localeCompare(b.name);
         });
+      }
+      function initials(name) {
+        var parts = name.trim().split(/\s+/);
+        var a = parts[0] ? parts[0][0] : "";
+        var b = parts[1] ? parts[1][0] : "";
+        return (a + b).toUpperCase();
       }
       function pad(n) {
         return String(n).padStart(2, "0");
@@ -571,20 +1625,43 @@
         });
         return c;
       }
+      function updateMetaLine() {
+        document.getElementById("metaLine").textContent =
+          "Term: " +
+          parseD(TERM_START).toLocaleDateString(undefined, {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }) +
+          " · " +
+          WEEKS +
+          " weeks · " +
+          students.length +
+          " students";
+      }
 
       /* live sync */
-      onSnapshot(collection(db, "students"), function (snap) {
-        students = snap.docs.map(function (d) {
-          return Object.assign({ id: d.id }, d.data());
-        });
-        if (students.length === 0) seedStudents();
-        renderActiveTab();
-      });
+      onSnapshot(
+        collection(db, "students"),
+        function (snap) {
+          students = snap.docs.map(function (d) {
+            return Object.assign({ id: d.id }, d.data());
+          });
+          if (!loaded.students && students.length === 0) seedStudents();
+          loaded.students = true;
+          updateMetaLine();
+          renderActiveTab();
+        },
+        function () {
+          toast("Could not reach the database", "error");
+        },
+      );
       onSnapshot(collection(db, "attendance"), function (snap) {
         attendance = {};
         snap.docs.forEach(function (d) {
           attendance[d.id] = d.data();
         });
+        loaded.attendance = true;
         renderActiveTab();
       });
       onSnapshot(collection(db, "holidays"), function (snap) {
@@ -592,6 +1669,7 @@
         snap.docs.forEach(function (d) {
           holidays[d.id] = d.data();
         });
+        loaded.holidays = true;
         renderActiveTab();
       });
       function seedStudents() {
@@ -675,87 +1753,184 @@
         });
       }
 
+      /* ---------- ring svg helper ---------- */
+      function ringSvg(pct, size) {
+        size = size || 46;
+        var r = size / 2 - 4,
+          c = 2 * Math.PI * r,
+          off = c * (1 - pct / 100);
+        return (
+          '<svg width="' +
+          size +
+          '" height="' +
+          size +
+          '" viewBox="0 0 ' +
+          size +
+          " " +
+          size +
+          '"><circle class="ring-track" cx="' +
+          size / 2 +
+          '" cy="' +
+          size / 2 +
+          '" r="' +
+          r +
+          '" fill="none" stroke-width="5"/><circle class="ring-val" cx="' +
+          size / 2 +
+          '" cy="' +
+          size / 2 +
+          '" r="' +
+          r +
+          '" fill="none" stroke-width="5" stroke-dasharray="' +
+          c +
+          '" stroke-dashoffset="' +
+          off +
+          '" transform="rotate(-90 ' +
+          size / 2 +
+          " " +
+          size / 2 +
+          '"/></svg>'
+        );
+      }
+
       /* Register */
       var datePicker = document.getElementById("datePicker");
+      var registerSearch = document.getElementById("registerSearch");
       datePicker.value = todayStr();
+      registerSearch.addEventListener("input", renderRegister);
+
+      function updateDateBar() {
+        var ds = datePicker.value,
+          d = parseD(ds);
+        document.getElementById("dateDow").textContent = d.toLocaleDateString(
+          undefined,
+          { weekday: "long" },
+        );
+        document.getElementById("dateNum").textContent = d.toLocaleDateString(
+          undefined,
+          { day: "numeric", month: "short", year: "numeric" },
+        );
+        document.getElementById("todayBtn").style.visibility =
+          ds === todayStr() ? "hidden" : "visible";
+      }
+
       function renderRegister() {
         var ds = datePicker.value,
           d = parseD(ds);
+        updateDateBar();
         var holBadge = document.getElementById("holBadge"),
-          listEl = document.getElementById("studentList");
+          listEl = document.getElementById("studentList"),
+          ringStats = document.getElementById("ringStats"),
+          q = registerSearch.value.trim().toLowerCase();
         if (isWeekend(d)) {
           holBadge.innerHTML =
-            '<span class="holiday-tag">Weekend — no marking</span>';
+            '<span class="pill-note weekend">Weekend — no marking today</span>';
           listEl.innerHTML = "";
-          updateCounts(0, 0);
+          ringStats.innerHTML = "";
           return;
         }
         holBadge.innerHTML = holidays[ds]
-          ? '<span class="holiday-tag">Holiday: ' +
-            (holidays[ds].label || "declared holiday") +
+          ? '<span class="pill-note holiday">Holiday' +
+            (holidays[ds].label ? ": " + holidays[ds].label : "") +
             "</span>"
           : "";
+        var total = students.length,
+          am = sessionTally(ds, "morning"),
+          pm = sessionTally(ds, "afternoon"),
+          amPct = total ? Math.round((am / total) * 100) : 0,
+          pmPct = total ? Math.round((pm / total) * 100) : 0;
+        ringStats.innerHTML =
+          '<div class="ring-card">' +
+          ringSvg(amPct) +
+          '<div><div class="ring-label">AM present</div><div class="ring-num">' +
+          am +
+          " <small>/ " +
+          total +
+          '</small></div></div></div>' +
+          '<div class="ring-card">' +
+          ringSvg(pmPct) +
+          '<div><div class="ring-label">PM present</div><div class="ring-num">' +
+          pm +
+          " <small>/ " +
+          total +
+          "</small></div></div></div>";
         listEl.innerHTML = "";
+        var anyShown = false;
         [
           ["M", "Males"],
           ["F", "Females"],
         ].forEach(function (pair) {
+          var group = sortedStudents().filter(function (s) {
+            return (
+              s.gender === pair[0] &&
+              (!q || s.name.toLowerCase().indexOf(q) !== -1)
+            );
+          });
+          if (group.length === 0) return;
+          anyShown = true;
           var h = document.createElement("h2");
-          h.textContent = pair[1];
+          h.innerHTML =
+            pair[1] + ' <span class="count">' + group.length + "</span>";
           listEl.appendChild(h);
           var n = 1;
-          sortedStudents()
-            .filter(function (s) {
-              return s.gender === pair[0];
-            })
-            .forEach(function (st) {
-              var row = document.createElement("div");
-              row.className = "stud-row";
-              var num = document.createElement("span");
-              num.className = "num";
-              num.textContent = n++ + ".";
-              var nm = document.createElement("span");
-              nm.className = "name";
-              nm.textContent = st.name;
-              var amWrap = document.createElement("span");
-              amWrap.className = "tick";
-              var am = document.createElement("input");
-              am.type = "checkbox";
-              am.checked = getStatus(ds, st.id, "morning");
-              am.addEventListener("change", function () {
-                setStatus(ds, st.id, "morning", am.checked);
-                updateCounts();
-              });
-              amWrap.appendChild(am);
-              var pmWrap = document.createElement("span");
-              pmWrap.className = "tick";
-              var pm = document.createElement("input");
-              pm.type = "checkbox";
-              pm.checked = getStatus(ds, st.id, "afternoon");
-              pm.addEventListener("change", function () {
-                setStatus(ds, st.id, "afternoon", pm.checked);
-                updateCounts();
-              });
-              pmWrap.appendChild(pm);
-              row.appendChild(num);
-              row.appendChild(nm);
-              row.appendChild(amWrap);
-              row.appendChild(pmWrap);
-              listEl.appendChild(row);
+          group.forEach(function (st) {
+            var row = document.createElement("div");
+            row.className = "stud-row";
+            var av = document.createElement("span");
+            av.className = "avatar g-" + st.gender;
+            av.textContent = initials(st.name);
+            var nm = document.createElement("span");
+            nm.className = "name-wrap";
+            var nmInner = document.createElement("div");
+            nmInner.className = "name";
+            nmInner.textContent = n++ + ". " + st.name;
+            nm.appendChild(nmInner);
+            var amWrap = document.createElement("span");
+            amWrap.className = "tick";
+            var amSwitch = document.createElement("span");
+            amSwitch.className = "switch";
+            var am = document.createElement("input");
+            am.type = "checkbox";
+            am.setAttribute("role", "switch");
+            am.setAttribute("aria-label", st.name + " present in the morning");
+            am.checked = getStatus(ds, st.id, "morning");
+            am.addEventListener("change", function () {
+              setStatus(ds, st.id, "morning", am.checked);
+              updateCounts();
             });
+            amSwitch.appendChild(am);
+            amWrap.appendChild(amSwitch);
+            var pmWrap = document.createElement("span");
+            pmWrap.className = "tick";
+            var pmSwitch = document.createElement("span");
+            pmSwitch.className = "switch";
+            var pm = document.createElement("input");
+            pm.type = "checkbox";
+            pm.setAttribute("role", "switch");
+            pm.setAttribute(
+              "aria-label",
+              st.name + " present in the afternoon",
+            );
+            pm.checked = getStatus(ds, st.id, "afternoon");
+            pm.addEventListener("change", function () {
+              setStatus(ds, st.id, "afternoon", pm.checked);
+              updateCounts();
+            });
+            pmSwitch.appendChild(pm);
+            pmWrap.appendChild(pmSwitch);
+            row.appendChild(av);
+            row.appendChild(nm);
+            row.appendChild(amWrap);
+            row.appendChild(pmWrap);
+            listEl.appendChild(row);
+          });
         });
-        updateCounts();
+        if (!anyShown) {
+          listEl.innerHTML =
+            '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><p>No students match your search.</p></div>';
+        }
       }
       function updateCounts() {
-        var ds = datePicker.value;
-        document.getElementById("cntAM").textContent = sessionTally(
-          ds,
-          "morning",
-        );
-        document.getElementById("cntPM").textContent = sessionTally(
-          ds,
-          "afternoon",
-        );
+        renderRegister();
       }
       document.getElementById("prevDay").addEventListener("click", function () {
         datePicker.value = dstr(addDays(parseD(datePicker.value), -1));
@@ -763,6 +1938,10 @@
       });
       document.getElementById("nextDay").addEventListener("click", function () {
         datePicker.value = dstr(addDays(parseD(datePicker.value), 1));
+        renderRegister();
+      });
+      document.getElementById("todayBtn").addEventListener("click", function () {
+        datePicker.value = todayStr();
         renderRegister();
       });
       datePicker.addEventListener("change", renderRegister);
@@ -774,6 +1953,7 @@
             setStatus(ds, st.id, "morning", true);
           });
           renderRegister();
+          toast("Marked all present for AM");
         });
       document
         .getElementById("markAllPM")
@@ -783,30 +1963,26 @@
             setStatus(ds, st.id, "afternoon", true);
           });
           renderRegister();
+          toast("Marked all present for PM");
         });
-      var clearArmed = false,
-        clearTimer = null,
-        clearBtn = document.getElementById("clearDay");
-      clearBtn.addEventListener("click", function () {
-        if (!clearArmed) {
-          clearArmed = true;
-          clearBtn.textContent = "Tap again to confirm";
-          clearTimer = setTimeout(function () {
-            clearArmed = false;
-            clearBtn.textContent = "Clear day";
-          }, 3000);
-          return;
-        }
-        clearTimeout(clearTimer);
-        clearArmed = false;
-        clearBtn.textContent = "Clear day";
-        var ds = datePicker.value;
-        students.forEach(function (st) {
-          setStatus(ds, st.id, "morning", false);
-          setStatus(ds, st.id, "afternoon", false);
+      document
+        .getElementById("clearDay")
+        .addEventListener("click", async function () {
+          var ok = await confirmModal(
+            "Clear this day?",
+            "This removes every AM and PM mark for " +
+              document.getElementById("dateNum").textContent +
+              ". This can't be undone.",
+          );
+          if (!ok) return;
+          var ds = datePicker.value;
+          students.forEach(function (st) {
+            setStatus(ds, st.id, "morning", false);
+            setStatus(ds, st.id, "afternoon", false);
+          });
+          renderRegister();
+          toast("Day cleared");
         });
-        renderRegister();
-      });
 
       /* Weekly */
       var weekSelect = document.getElementById("weekSelect");
@@ -827,12 +2003,20 @@
       }
       weekSelect.value = currentWeekIndex();
       weekSelect.addEventListener("change", renderWeekly);
+      document.getElementById("weekPrev").addEventListener("click", function () {
+        weekSelect.value = Math.max(1, parseInt(weekSelect.value, 10) - 1);
+        renderWeekly();
+      });
+      document.getElementById("weekNext").addEventListener("click", function () {
+        weekSelect.value = Math.min(WEEKS, parseInt(weekSelect.value, 10) + 1);
+        renderWeekly();
+      });
       function renderWeekly() {
         var w = parseInt(weekSelect.value, 10),
           dates = weekDates(w),
           out = document.getElementById("weeklyOut");
         var html =
-          "<table><thead><tr><th>Day</th><th>AM</th><th>PM</th><th>Total</th></tr></thead><tbody>";
+          '<div class="table-wrap"><table><thead><tr><th>Day</th><th class="num-col">AM</th><th class="num-col">PM</th><th class="num-col">Total</th></tr></thead><tbody>';
         var wkM = 0,
           wkA = 0,
           schoolDays = 0;
@@ -867,11 +2051,11 @@
           html +=
             "<tr><td>" +
             label +
-            "</td><td>" +
+            "</td><td class='num-col'>" +
             m +
-            "</td><td>" +
+            "</td><td class='num-col'>" +
             a +
-            "</td><td>" +
+            "</td><td class='num-col'>" +
             (m + a) +
             "</td></tr>";
         });
@@ -879,50 +2063,57 @@
           actual = wkM + wkA,
           pct = expected > 0 ? ((actual / expected) * 100).toFixed(1) : "0.0";
         html +=
-          "</tbody><tfoot><tr><td>Week total</td><td>" +
+          "</tbody><tfoot><tr><td>Week total</td><td class='num-col'>" +
           wkM +
-          "</td><td>" +
+          "</td><td class='num-col'>" +
           wkA +
-          "</td><td>" +
+          "</td><td class='num-col'>" +
           actual +
-          "</td></tr></tfoot></table>";
+          "</td></tr></tfoot></table></div>";
         html +=
-          "<p class='note'>School days so far: " +
+          "<div class='overview-grid' style='grid-template-columns:repeat(2,1fr)'>" +
+          "<div class='stat-card'><div class='v'>" +
           schoolDays +
-          ". Expected: " +
-          expected +
-          ".<br><b style='color:var(--text)'>Week " +
-          w +
-          ": " +
-          actual +
-          " / " +
-          expected +
-          " = " +
+          "</div><div class='l'>School days</div></div>" +
+          "<div class='stat-card'><div class='v'>" +
           pct +
-          "%</b></p>";
+          "%</div><div class='l'>Week attendance</div></div>" +
+          "</div>";
         html +=
-          "<h2>Per-student — Week " +
-          w +
-          "</h2><table><thead><tr><th>#</th><th>Name</th><th>Points</th></tr></thead><tbody>";
+          "<div class='row-flex' style='justify-content:space-between'><h2 style='margin:0'>Per-student</h2><button class='chip ghost' id='exportWeekCsv' type='button'><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v12m0 0l-4-4m4 4l4-4M4 21h16\"/></svg>Export CSV</button></div>";
+        html +=
+          "<div class='table-wrap'><table><thead><tr><th>#</th><th>Name</th><th style='min-width:110px'>Attendance</th></tr></thead><tbody>";
         var maxPts = schoolDays * 2;
+        var csvRows = [["#", "Name", "Points", "Max", "Percent"]];
         sortedStudents().forEach(function (st, i) {
           var pts = 0;
           dates.forEach(function (ds) {
             if (isSchoolDay(ds)) pts += dayPoints(ds, st.id);
           });
+          var pct2 = maxPts > 0 ? Math.round((pts / maxPts) * 100) : 0;
+          csvRows.push([i + 1, st.name, pts, maxPts, pct2 + "%"]);
           html +=
             "<tr><td>" +
             (i + 1) +
             "</td><td>" +
             st.name +
-            "</td><td>" +
+            "</td><td><div class='mini-bar-wrap'><div class='mini-bar" +
+            (pct2 < 75 ? " low" : "") +
+            "'><span style='width:" +
+            pct2 +
+            "%'></span></div><span class='mini-pct'>" +
             pts +
-            " / " +
+            "/" +
             maxPts +
-            "</td></tr>";
+            "</span></div></td></tr>";
         });
-        html += "</tbody></table>";
+        html += "</tbody></table></div>";
         out.innerHTML = html;
+        document
+          .getElementById("exportWeekCsv")
+          .addEventListener("click", function () {
+            downloadCsv("week-" + w + "-attendance.csv", csvRows);
+          });
       }
 
       /* Term */
@@ -936,46 +2127,79 @@
         }
         var maxPts = allSchoolDays.length * 2,
           grandActual = 0;
-        var html =
-          "<p class='note'>School days so far: " +
-          allSchoolDays.length +
-          " (weekends/holidays excluded, future dates not counted).</p>";
-        html +=
-          "<table><thead><tr><th>#</th><th>Name</th><th>Total</th><th>%</th></tr></thead><tbody>";
-        sortedStudents().forEach(function (st, i) {
+        var rows = [];
+        sortedStudents().forEach(function (st) {
           var pts = 0;
           allSchoolDays.forEach(function (ds) {
             pts += dayPoints(ds, st.id);
           });
           grandActual += pts;
-          var pct = maxPts > 0 ? ((pts / maxPts) * 100).toFixed(1) : "0.0";
+          var pct = maxPts > 0 ? (pts / maxPts) * 100 : 0;
+          rows.push({ st: st, pts: pts, pct: pct });
+        });
+        var grandExpected = maxPts * students.length,
+          grandPct =
+            grandExpected > 0 ? (grandActual / grandExpected) * 100 : 0;
+        var atRisk = rows.filter(function (r) {
+          return r.pct < 75;
+        }).length;
+
+        var html =
+          "<div class='overview-grid'>" +
+          "<div class='stat-card'><div class='v'>" +
+          allSchoolDays.length +
+          "</div><div class='l'>School days</div></div>" +
+          "<div class='stat-card'><div class='v'>" +
+          grandPct.toFixed(0) +
+          "%</div><div class='l'>Class average</div></div>" +
+          "<div class='stat-card'><div class='v'>" +
+          atRisk +
+          "</div><div class='l'>Below 75%</div></div>" +
+          "</div>";
+        html +=
+          "<p class='note'>School days so far: " +
+          allSchoolDays.length +
+          " (weekends and holidays excluded, future dates not counted).</p>";
+        html +=
+          "<div class='row-flex' style='justify-content:flex-end'><button class='chip ghost' id='exportTermCsv' type='button'><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v12m0 0l-4-4m4 4l4-4M4 21h16\"/></svg>Export CSV</button></div>";
+        html +=
+          "<div class='table-wrap'><table><thead><tr><th>#</th><th>Name</th><th style='min-width:120px'>Attendance</th></tr></thead><tbody>";
+        var csvRows = [["#", "Name", "Points", "Max", "Percent"]];
+        rows.forEach(function (r, i) {
+          var pctR = Math.round(r.pct);
+          csvRows.push([i + 1, r.st.name, r.pts, maxPts, pctR + "%"]);
+          var tag = "";
+          if (r.pct >= 99.5)
+            tag = "<span class='tag star'>★ 100%</span>";
+          else if (r.pct < 75) tag = "<span class='tag risk'>At risk</span>";
           html +=
             "<tr><td>" +
             (i + 1) +
             "</td><td>" +
-            st.name +
-            "</td><td>" +
-            pts +
-            " / " +
-            maxPts +
-            "</td><td>" +
-            pct +
-            "%</td></tr>";
+            r.st.name +
+            (tag ? " " + tag : "") +
+            "</td><td><div class='mini-bar-wrap'><div class='mini-bar" +
+            (pctR < 75 ? " low" : "") +
+            "'><span style='width:" +
+            pctR +
+            "%'></span></div><span class='mini-pct'>" +
+            pctR +
+            "%</span></div></td></tr>";
         });
-        var grandExpected = maxPts * students.length,
-          grandPct =
-            grandExpected > 0
-              ? ((grandActual / grandExpected) * 100).toFixed(1)
-              : "0.0";
         html +=
           "</tbody><tfoot><tr><td colspan='2'>Grand total</td><td>" +
           grandActual +
           " / " +
           grandExpected +
-          "</td><td>" +
-          grandPct +
-          "%</td></tr></tfoot></table>";
+          " (" +
+          grandPct.toFixed(1) +
+          "%)</td></tr></tfoot></table></div>";
         out.innerHTML = html;
+        document
+          .getElementById("exportTermCsv")
+          .addEventListener("click", function () {
+            downloadCsv("term-attendance.csv", csvRows);
+          });
       }
 
       /* Students */
@@ -1006,6 +2230,7 @@
         document.getElementById("fAddr").value = "";
         document.getElementById("fPhone").value = "";
         document.getElementById("fReligion").value = "Christianity";
+        document.getElementById("fNameField").classList.remove("invalid");
         fGender = "M";
         document.getElementById("fGenM").classList.add("on");
         document.getElementById("fGenF").classList.remove("on");
@@ -1033,11 +2258,16 @@
       document.getElementById("fCancel").addEventListener("click", clearForm);
       document.getElementById("fSave").addEventListener("click", function () {
         var name = document.getElementById("fName").value.trim();
+        var nameField = document.getElementById("fNameField");
         if (!name) {
-          alert("Enter the student's name.");
+          nameField.classList.add("invalid");
+          toast("Enter the student's name", "error");
+          document.getElementById("fName").focus();
           return;
         }
+        nameField.classList.remove("invalid");
         var id = document.getElementById("fId").value || genId();
+        var isNew = !document.getElementById("fId").value;
         var rec = {
           name: name,
           gender: fGender,
@@ -1051,47 +2281,106 @@
         };
         setDoc(doc(db, "students", id), rec);
         clearForm();
+        toast(isNew ? "Student added" : "Student updated");
       });
-      var delArmed = {};
+      var studentsSearch = document.getElementById("studentsSearch");
+      studentsSearch.addEventListener("input", renderStudents);
+      document
+        .getElementById("exportStudentsCsv")
+        .addEventListener("click", function () {
+          var rows = [
+            [
+              "Name",
+              "Gender",
+              "Admission No",
+              "DOB",
+              "Parent/Guardian",
+              "Address",
+              "Phone",
+              "Religion",
+            ],
+          ];
+          sortedStudents().forEach(function (st) {
+            rows.push([
+              st.name,
+              st.gender,
+              st.admissionNo,
+              st.dob,
+              st.parentName,
+              st.address,
+              st.phone,
+              st.religion,
+            ]);
+          });
+          downloadCsv("students.csv", rows);
+        });
       function renderStudents() {
+        var q = studentsSearch.value.trim().toLowerCase();
+        var mCount = 0,
+          fCount = 0;
         ["M", "F"].forEach(function (g) {
           var el = document.getElementById(g === "M" ? "stuListM" : "stuListF");
           el.innerHTML = "";
-          sortedStudents()
-            .filter(function (s) {
-              return s.gender === g;
-            })
-            .forEach(function (st) {
-              var item = document.createElement("div");
-              item.className = "stu-item";
-              var left = document.createElement("span");
-              left.textContent =
-                st.name + (st.admissionNo ? " · " + st.admissionNo : "");
-              left.style.flex = "1";
-              left.style.cursor = "pointer";
-              left.addEventListener("click", function () {
-                loadForm(st);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              });
-              var btn = document.createElement("button");
-              btn.textContent = "Remove";
-              btn.addEventListener("click", function () {
-                if (!delArmed[st.id]) {
-                  delArmed[st.id] = true;
-                  btn.textContent = "Confirm?";
-                  setTimeout(function () {
-                    delArmed[st.id] = false;
-                    btn.textContent = "Remove";
-                  }, 3000);
-                  return;
-                }
-                deleteDoc(doc(db, "students", st.id));
-              });
-              item.appendChild(left);
-              item.appendChild(btn);
-              el.appendChild(item);
+          var group = sortedStudents().filter(function (s) {
+            return (
+              s.gender === g && (!q || s.name.toLowerCase().indexOf(q) !== -1)
+            );
+          });
+          if (g === "M") mCount = group.length;
+          else fCount = group.length;
+          if (group.length === 0) {
+            el.innerHTML =
+              "<p class='note'>" +
+              (q ? "No matches." : "No students yet.") +
+              "</p>";
+            return;
+          }
+          group.forEach(function (st) {
+            var item = document.createElement("div");
+            item.className = "stu-item";
+            var left = document.createElement("div");
+            left.className = "left";
+            var av = document.createElement("span");
+            av.className = "avatar g-" + st.gender;
+            av.textContent = initials(st.name);
+            var txt = document.createElement("span");
+            txt.className = "txt";
+            var n = document.createElement("div");
+            n.className = "n";
+            n.textContent = st.name;
+            var a = document.createElement("div");
+            a.className = "a";
+            a.textContent = st.admissionNo
+              ? "Adm. " + st.admissionNo
+              : "No admission no.";
+            txt.appendChild(n);
+            txt.appendChild(a);
+            left.appendChild(av);
+            left.appendChild(txt);
+            left.addEventListener("click", function () {
+              loadForm(st);
+              window.scrollTo({ top: 0, behavior: "smooth" });
             });
+            var btn = document.createElement("button");
+            btn.className = "rm";
+            btn.textContent = "Remove";
+            btn.addEventListener("click", async function (e) {
+              e.stopPropagation();
+              var ok = await confirmModal(
+                "Remove " + st.name + "?",
+                "This deletes the student record. Their attendance history will remain but will no longer be counted.",
+              );
+              if (!ok) return;
+              deleteDoc(doc(db, "students", st.id));
+              toast("Removed " + st.name);
+            });
+            item.appendChild(left);
+            item.appendChild(btn);
+            el.appendChild(item);
+          });
         });
+        document.getElementById("cntM").textContent = mCount;
+        document.getElementById("cntF").textContent = fCount;
       }
 
       /* Holidays */
@@ -1099,7 +2388,8 @@
         var out = document.getElementById("holList"),
           keys = Object.keys(holidays).sort();
         if (keys.length === 0) {
-          out.innerHTML = "<p class='note'>No holidays declared yet.</p>";
+          out.innerHTML =
+            '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><p>No holidays declared yet.</p></div>';
           return;
         }
         out.innerHTML = "";
@@ -1107,22 +2397,40 @@
           var item = document.createElement("div");
           item.className = "hol-item";
           var d = parseD(ds),
-            lbl = d.toLocaleDateString(undefined, {
-              weekday: "short",
+            weekday = d.toLocaleDateString(undefined, { weekday: "short" }),
+            full = d.toLocaleDateString(undefined, {
+              weekday: "long",
               year: "numeric",
               month: "short",
               day: "numeric",
             });
-          item.innerHTML =
-            "<span>" +
-            lbl +
-            (holidays[ds].label ? " — " + holidays[ds].label : "") +
-            "</span>";
+          var badge = document.createElement("div");
+          badge.className = "date-badge";
+          badge.innerHTML =
+            "<b>" + d.getDate() + "</b><span>" + weekday + "</span>";
+          var info = document.createElement("div");
+          info.className = "hol-info";
+          info.innerHTML =
+            "<div class='d1'>" +
+            full +
+            "</div>" +
+            (holidays[ds].label
+              ? "<div class='d2'>" + holidays[ds].label + "</div>"
+              : "");
           var btn = document.createElement("button");
+          btn.className = "rm";
           btn.textContent = "Remove";
-          btn.addEventListener("click", function () {
+          btn.addEventListener("click", async function () {
+            var ok = await confirmModal(
+              "Remove this holiday?",
+              full + " will be treated as a normal school day again.",
+            );
+            if (!ok) return;
             deleteDoc(doc(db, "holidays", ds));
+            toast("Holiday removed");
           });
+          item.appendChild(badge);
+          item.appendChild(info);
           item.appendChild(btn);
           out.appendChild(item);
         });
@@ -1131,14 +2439,27 @@
         .getElementById("addHoliday")
         .addEventListener("click", function () {
           var ds = document.getElementById("holDate").value;
-          if (!ds) return;
+          if (!ds) {
+            toast("Choose a date first", "error");
+            return;
+          }
           var label = document.getElementById("holLabel").value.trim();
           setDoc(doc(db, "holidays", ds), { label: label });
           document.getElementById("holLabel").value = "";
+          document.getElementById("holDate").value = "";
+          toast("Holiday added");
         });
 
       /* Tabs */
       var activeTab = "register";
+      var navIndicator = document.getElementById("navIndicator");
+      function positionIndicator(btn) {
+        var nav = btn.parentElement;
+        var navRect = nav.getBoundingClientRect();
+        var r = btn.getBoundingClientRect();
+        navIndicator.style.left = r.left - navRect.left + "px";
+        navIndicator.style.width = r.width + "px";
+      }
       document.querySelectorAll(".tabbtn").forEach(function (btn) {
         btn.addEventListener("click", function () {
           document.querySelectorAll(".tabbtn").forEach(function (b) {
@@ -1152,8 +2473,13 @@
             .getElementById("tab-" + btn.dataset.tab)
             .classList.add("active");
           activeTab = btn.dataset.tab;
+          positionIndicator(btn);
           renderActiveTab();
         });
+      });
+      window.addEventListener("resize", function () {
+        var active = document.querySelector(".tabbtn.active");
+        if (active) positionIndicator(active);
       });
       function renderActiveTab() {
         if (activeTab === "register") renderRegister();
@@ -1172,6 +2498,10 @@
           .catch(function () {});
       }
       clearForm();
+      updateMetaLine();
+      requestAnimationFrame(function () {
+        positionIndicator(document.querySelector(".tabbtn.active"));
+      });
     </script>
   </body>
 </html>
