@@ -1,4 +1,4 @@
-var CACHE="attendance-cache-v5";
+var CACHE="attendance-cache-v6";
 var ASSETS=["./index.html","./manifest.json","./icon.svg",
 "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js",
 "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"];

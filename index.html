@@ -2081,33 +2081,55 @@
           "</div>";
         html +=
           "<div class='row-flex' style='justify-content:space-between'><h2 style='margin:0'>Per-student</h2><button class='chip ghost' id='exportWeekCsv' type='button'><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v12m0 0l-4-4m4 4l4-4M4 21h16\"/></svg>Export CSV</button></div>";
-        html +=
-          "<div class='table-wrap'><table><thead><tr><th>#</th><th>Name</th><th style='min-width:110px'>Attendance</th></tr></thead><tbody>";
         var maxPts = schoolDays * 2;
-        var csvRows = [["#", "Name", "Points", "Max", "Percent"]];
-        sortedStudents().forEach(function (st, i) {
-          var pts = 0;
-          dates.forEach(function (ds) {
-            if (isSchoolDay(ds)) pts += dayPoints(ds, st.id);
+        var csvRows = [["#", "Name", "Gender", "Points", "Max", "Percent"]];
+        [
+          ["M", "Males"],
+          ["F", "Females"],
+        ].forEach(function (pair) {
+          var group = sortedStudents().filter(function (s) {
+            return s.gender === pair[0];
           });
-          var pct2 = maxPts > 0 ? Math.round((pts / maxPts) * 100) : 0;
-          csvRows.push([i + 1, st.name, pts, maxPts, pct2 + "%"]);
+          if (group.length === 0) return;
           html +=
-            "<tr><td>" +
-            (i + 1) +
-            "</td><td>" +
-            st.name +
-            "</td><td><div class='mini-bar-wrap'><div class='mini-bar" +
-            (pct2 < 75 ? " low" : "") +
-            "'><span style='width:" +
-            pct2 +
-            "%'></span></div><span class='mini-pct'>" +
-            pts +
-            "/" +
-            maxPts +
-            "</span></div></td></tr>";
+            "<h2>" +
+            pair[1] +
+            ' <span class="count">' +
+            group.length +
+            "</span></h2>";
+          html +=
+            "<div class='table-wrap'><table><thead><tr><th>#</th><th>Name</th><th style='min-width:110px'>Attendance</th></tr></thead><tbody>";
+          group.forEach(function (st, i) {
+            var pts = 0;
+            dates.forEach(function (ds) {
+              if (isSchoolDay(ds)) pts += dayPoints(ds, st.id);
+            });
+            var pct2 = maxPts > 0 ? Math.round((pts / maxPts) * 100) : 0;
+            csvRows.push([
+              i + 1,
+              st.name,
+              pair[1].slice(0, -1),
+              pts,
+              maxPts,
+              pct2 + "%",
+            ]);
+            html +=
+              "<tr><td>" +
+              (i + 1) +
+              "</td><td>" +
+              st.name +
+              "</td><td><div class='mini-bar-wrap'><div class='mini-bar" +
+              (pct2 < 75 ? " low" : "") +
+              "'><span style='width:" +
+              pct2 +
+              "%'></span></div><span class='mini-pct'>" +
+              pts +
+              "/" +
+              maxPts +
+              "</span></div></td></tr>";
+          });
+          html += "</tbody></table></div>";
         });
-        html += "</tbody></table></div>";
         out.innerHTML = html;
         document
           .getElementById("exportWeekCsv")
