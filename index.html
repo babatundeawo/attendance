@@ -1550,8 +1550,56 @@
         var first = name.trim().split(/\s+/)[0] || "";
         return first ? "Mr & Mrs " + titleCase(first) : "";
       }
+      var REGISTER_ORDER_M = [
+        "ABUBAKAR HARUNA","ABUBAKAR LAWAZANA","AJOBO ADAMS","ARINOYE PETER",
+        "AYOMIKUN MICHAEL","DAVID ANDREW","DOMINIC SUNDAY","IBRAHIM ROSHEED",
+        "IBRAHIM SAMAD","ISMAIL SAMAD","JAMES DAVID","JOHN JOSEPH",
+        "MURITALA ABDULRASHEED","OLANIYAN JULIUS","OLANIYI SAMAD","OLAYODE ABDULSAMAD",
+        "OLUKUNMI DANIEL","OMOWUNMI FRIDAUS","OYEDOKUN KHOLEED","PETER SUNDAY",
+        "RASAQ RIDWAN","SAMUEL KEHINDE","SARUMI ABDULQUDUS"
+      ];
+      var REGISTER_ORDER_F = [
+        "ABRAHAM BLESSING","AJANI ADENIKE","AJAYI DORCAS","AKOREDE SOFIAT",
+        "ATOBATELE DEBORAH","BADMUS ALLIAT","DADA HERITAGE","DARAMOLA AISHAT",
+        "GBADEBO REBECCA","HAMZAT AYOKA","IDRIS ROKEEBAT","ISAAC ROSELINE",
+        "MUHAMMED MARIAM","MUHAMMED SADIA","MUSTAPHA ROHEEMAT","OGUNDAIRO DEBORAH",
+        "OLADELE RODIAT","OLALEKAN ALIYAT","OLANIYAN RODIAT","RASAQ RUKAYAT",
+        "SANNI AISHAT","SHUAIB MARIAM","USMAN ABIBAT","YUSUF AYISAT",
+        "SAMUEL TAIWO","ADEJUMO VICTORIA","WAHAB YUSROH"
+      ];
+      function registerIndex(name, gender) {
+        var list = gender === "F" ? REGISTER_ORDER_F : REGISTER_ORDER_M;
+        var n = (name || "").trim().toUpperCase();
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] === n) return i;
+        }
+        return -1;
+      }
+      function maxOrderFor(gender) {
+        var max = -1;
+        students.forEach(function (s) {
+          if (s.gender === gender && typeof s.order === "number" && s.order > max)
+            max = s.order;
+        });
+        return max;
+      }
+      var orderMigrationDone = false;
+      function migrateStudentOrder() {
+        var extra = 0;
+        students.forEach(function (s) {
+          if (typeof s.order !== "number") {
+            var idx = registerIndex(s.name, s.gender);
+            var ord = idx >= 0 ? idx : 1000 + extra++;
+            s.order = ord;
+            setDoc(doc(db, "students", s.id), { order: ord }, { merge: true });
+          }
+        });
+      }
       function sortedStudents() {
         return students.slice().sort(function (a, b) {
+          var oa = typeof a.order === "number" ? a.order : 9999;
+          var ob = typeof b.order === "number" ? b.order : 9999;
+          if (oa !== ob) return oa - ob;
           return a.name.localeCompare(b.name);
         });
       }
@@ -1649,6 +1697,10 @@
           });
           if (!loaded.students && students.length === 0) seedStudents();
           loaded.students = true;
+          if (!orderMigrationDone) {
+            orderMigrationDone = true;
+            migrateStudentOrder();
+          }
           updateMetaLine();
           renderActiveTab();
         },
@@ -1724,13 +1776,14 @@
           "USMAN ABIBAT",
           "YUSUF AYISAT",
           "SAMUEL TAIWO",
-          "WAHAB YUSROH",
           "ADEJUMO VICTORIA",
+          "WAHAB YUSROH",
         ];
-        M.forEach(function (n) {
+        M.forEach(function (n, i) {
           setDoc(doc(db, "students", genId()), {
             name: n,
             gender: "M",
+            order: i,
             admissionNo: "",
             dob: "",
             parentName: autoParent(n),
@@ -1739,10 +1792,11 @@
             religion: "Christianity",
           });
         });
-        F.forEach(function (n) {
+        F.forEach(function (n, i) {
           setDoc(doc(db, "students", genId()), {
             name: n,
             gender: "F",
+            order: i,
             admissionNo: "",
             dob: "",
             parentName: autoParent(n),
@@ -2082,52 +2136,37 @@
         html +=
           "<div class='row-flex' style='justify-content:space-between'><h2 style='margin:0'>Per-student</h2><button class='chip ghost' id='exportWeekCsv' type='button'><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v12m0 0l-4-4m4 4l4-4M4 21h16\"/></svg>Export CSV</button></div>";
         var maxPts = schoolDays * 2;
-        var csvRows = [["#", "Name", "Gender", "Points", "Max", "Percent"]];
-        [
-          ["M", "Males"],
-          ["F", "Females"],
-        ].forEach(function (pair) {
-          var group = sortedStudents().filter(function (s) {
-            return s.gender === pair[0];
-          });
-          if (group.length === 0) return;
+        var csvRows = [["#", "Gender", "Name", "Points", "Max", "Percent"]];
+        [["M", "Males"], ["F", "Females"]].forEach(function (pair) {
           html +=
-            "<h2>" +
-            pair[1] +
-            ' <span class="count">' +
-            group.length +
-            "</span></h2>";
-          html +=
+            "<h2 style='margin-top:14px'>" + pair[1] + "</h2>" +
             "<div class='table-wrap'><table><thead><tr><th>#</th><th>Name</th><th style='min-width:110px'>Attendance</th></tr></thead><tbody>";
-          group.forEach(function (st, i) {
-            var pts = 0;
-            dates.forEach(function (ds) {
-              if (isSchoolDay(ds)) pts += dayPoints(ds, st.id);
+          var n = 0;
+          sortedStudents()
+            .filter(function (s) { return s.gender === pair[0]; })
+            .forEach(function (st) {
+              n++;
+              var pts = 0;
+              dates.forEach(function (ds) {
+                if (isSchoolDay(ds)) pts += dayPoints(ds, st.id);
+              });
+              var pct2 = maxPts > 0 ? Math.round((pts / maxPts) * 100) : 0;
+              csvRows.push([n, pair[1], st.name, pts, maxPts, pct2 + "%"]);
+              html +=
+                "<tr><td>" +
+                n +
+                "</td><td>" +
+                st.name +
+                "</td><td><div class='mini-bar-wrap'><div class='mini-bar" +
+                (pct2 < 75 ? " low" : "") +
+                "'><span style='width:" +
+                pct2 +
+                "%'></span></div><span class='mini-pct'>" +
+                pts +
+                "/" +
+                maxPts +
+                "</span></div></td></tr>";
             });
-            var pct2 = maxPts > 0 ? Math.round((pts / maxPts) * 100) : 0;
-            csvRows.push([
-              i + 1,
-              st.name,
-              pair[1].slice(0, -1),
-              pts,
-              maxPts,
-              pct2 + "%",
-            ]);
-            html +=
-              "<tr><td>" +
-              (i + 1) +
-              "</td><td>" +
-              st.name +
-              "</td><td><div class='mini-bar-wrap'><div class='mini-bar" +
-              (pct2 < 75 ? " low" : "") +
-              "'><span style='width:" +
-              pct2 +
-              "%'></span></div><span class='mini-pct'>" +
-              pts +
-              "/" +
-              maxPts +
-              "</span></div></td></tr>";
-          });
           html += "</tbody></table></div>";
         });
         out.innerHTML = html;
@@ -2290,9 +2329,14 @@
         nameField.classList.remove("invalid");
         var id = document.getElementById("fId").value || genId();
         var isNew = !document.getElementById("fId").value;
+        var existing = students.find(function (s) { return s.id === id; });
+        var orderVal = existing && typeof existing.order === "number"
+          ? existing.order
+          : maxOrderFor(fGender) + 1;
         var rec = {
           name: name,
           gender: fGender,
+          order: orderVal,
           admissionNo: document.getElementById("fAdm").value.trim(),
           dob: document.getElementById("fDob").value,
           parentName:
