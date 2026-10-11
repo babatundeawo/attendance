@@ -42,7 +42,8 @@ export function startSync() {
       collection(db, name),
       { includeMetadataChanges: true },
       (snap) => {
-        const patch = { dbError: false, access: "granted", pending: snap.metadata.hasPendingWrites };
+        const patch = { dbError: false, pending: snap.metadata.hasPendingWrites };
+        if (state.access !== "denied") patch.access = "granted";
         if (snap.docChanges().length > 0 || !state.loaded[key]) {
           patch[name] = build(snap);
           patch.loaded = { ...state.loaded, [key]: true };
