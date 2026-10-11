@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Attendance Register</title>
+    <meta
+      name="description"
+      content="A private daily AM/PM attendance register for teachers, with weekly and term reports that sync live and work offline."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <link rel="canonical" href="https://babatundeawo.github.io/attendance/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Attendance Register" />
+    <meta property="og:description" content="Daily AM/PM attendance with weekly and term reports. Syncs live, works offline." />
+    <meta property="og:url" content="https://babatundeawo.github.io/attendance/" />
+    <meta property="og:image" content="https://babatundeawo.github.io/attendance/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#f7f4ed" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#12110d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Attendance" />
+    <script src="theme-init.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Shown if JavaScript is switched off -->
+    <noscript>
+      <div class="gate">
+        <div class="gate-card">
+          <h1>JavaScript is required</h1>
+          <p>The Attendance Register needs JavaScript to record and sync attendance. Please switch it on in your browser and reload.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- Boot splash (replaced as soon as the app starts) -->
+    <div class="gate" id="splash" role="status" aria-live="polite">
+      <div class="splash-mark" aria-hidden="true"></div>
+      <p class="muted">Loading register…</p>
+    </div>
+
+    <!-- Sign-in -->
+    <section class="gate" id="loginView" hidden>
+      <div class="gate-card">
+        <div class="brand brand-lg">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-name">Attendance Register</span>
+        </div>
+        <h1 id="loginTitle">Sign in</h1>
+        <p class="muted" id="loginIntro">Use the email and password your administrator gave you.</p>
+        <form id="loginForm" novalidate>
+          <div class="field" id="emailField">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" required />
+          </div>
+          <div class="field" id="passwordField">
+            <label for="loginPassword">Password</label>
+            <div class="input-affix">
+              <input id="loginPassword" type="password" autocomplete="current-password" required />
+              <button class="icon-btn icon-btn-quiet" id="togglePassword" type="button" aria-label="Show password" aria-pressed="false"></button>
+            </div>
+          </div>
+          <p class="form-msg" id="loginMessage" role="alert" hidden></p>
+          <button class="btn btn-primary btn-block" id="loginSubmit" type="submit">
+            <span class="btn-label">Sign in</span>
+          </button>
+          <button class="link-btn" id="forgotLink" type="button">Forgot your password?</button>
+          <button class="link-btn" id="backToSignIn" type="button" hidden>Back to sign in</button>
+        </form>
+        <p class="gate-foot muted">Accounts are created by the administrator. There is no public sign-up.</p>
+      </div>
+    </section>
+
+    <!-- Signed in, but not on the staff list -->
+    <section class="gate" id="deniedView" hidden>
+      <div class="gate-card">
+        <h1>Access not granted yet</h1>
+        <p>
+          You're signed in as <strong id="deniedEmail"></strong>, but this account hasn't been given access to the register.
+          Ask the administrator to add it, then reload this page.
+        </p>
+        <div class="gate-actions">
+          <button class="btn btn-secondary" id="deniedReload" type="button">Reload</button>
+          <button class="btn btn-ghost" id="deniedSignOut" type="button">Sign out</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Build is missing its Firebase settings -->
+    <section class="gate" id="configView" hidden>
+      <div class="gate-card">
+        <h1>Setup isn't finished</h1>
+        <p>
+          This copy of the site was built without its Firebase settings. The administrator can fix this by adding the six
+          repository secrets described in <strong>docs/FIREBASE_LOGIN_SETUP.md</strong> and running the deployment again.
+        </p>
+      </div>
+    </section>
+
+    <!-- The app -->
+    <div class="app" id="appShell" hidden>
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <div class="brand-text">
+              <span class="brand-name">Attendance Register</span>
+              <span class="brand-sub" id="metaLine"></span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <span class="sync-pill" id="syncPill" role="status"><span class="sync-dot" aria-hidden="true"></span><span id="syncText">Connecting</span></span>
+            <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode"></button>
+            <div class="account">
+              <button class="avatar-btn" id="accountBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu" aria-label="Account menu"></button>
+              <div class="menu" id="accountMenu" hidden>
+                <p class="menu-label">Signed in as</p>
+                <p class="menu-email" id="accountEmail"></p>
+                <button class="menu-item" id="signOutBtn" type="button"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <nav class="nav" aria-label="Sections" id="nav"></nav>
+
+      <main id="main" class="main" tabindex="-1">
+        <div class="banner banner-error" id="dbBanner" role="alert" hidden>
+          Can't reach the database right now. Changes will be saved on this device and sync when the connection returns.
+        </div>
+
+        <!-- Register -->
+        <section class="panel" id="panel-register" aria-labelledby="h-register">
+          <h1 class="sr-only" id="h-register">Daily register</h1>
+          <div class="date-bar">
+            <button class="icon-btn" id="prevDay" type="button" aria-label="Previous day"></button>
+            <div class="date-display">
+              <div class="dow" id="dateDow"></div>
+              <div class="dnum" id="dateNum"></div>
+              <input type="date" id="datePicker" aria-label="Choose date" />
+            </div>
+            <button class="icon-btn" id="nextDay" type="button" aria-label="Next day"></button>
+            <button class="btn btn-secondary btn-sm" id="todayBtn" type="button">Today</button>
+          </div>
+          <div id="holBadge"></div>
+          <div class="stats-row" id="ringStats"></div>
+          <div class="toolbar">
+            <button class="btn btn-secondary btn-sm" id="markAllAM" type="button"></button>
+            <button class="btn btn-secondary btn-sm" id="markAllPM" type="button"></button>
+            <button class="btn btn-danger-quiet btn-sm" id="clearDay" type="button"></button>
+          </div>
+          <div class="search">
+            <span class="search-icon" id="regSearchIcon"></span>
+            <input type="search" id="registerSearch" placeholder="Search students" aria-label="Search students" autocomplete="off" />
+          </div>
+          <div class="reg-head" aria-hidden="true"><span class="rh-name">Name</span><span class="rh-col">AM</span><span class="rh-col">PM</span></div>
+          <div id="studentList"></div>
+        </section>
+
+        <!-- Weekly -->
+        <section class="panel" id="panel-weekly" aria-labelledby="h-weekly" hidden>
+          <h1 class="sr-only" id="h-weekly">Weekly report</h1>
+          <div class="toolbar toolbar-fill">
+            <button class="icon-btn" id="weekPrev" type="button" aria-label="Previous week"></button>
+            <select id="weekSelect" aria-label="Choose week"></select>
+            <button class="icon-btn" id="weekNext" type="button" aria-label="Next week"></button>
+          </div>
+          <div id="weeklyOut"></div>
+        </section>
+
+        <!-- Term -->
+        <section class="panel" id="panel-term" aria-labelledby="h-term" hidden>
+          <h1 class="sr-only" id="h-term">Term report</h1>
+          <div id="termOut"></div>
+        </section>
+
+        <!-- Students -->
+        <section class="panel" id="panel-students" aria-labelledby="h-students" hidden>
+          <h1 class="sr-only" id="h-students">Students</h1>
+          <form class="card form-card" id="studentForm" novalidate>
+            <h2 id="formTitle">Add a student</h2>
+            <input type="hidden" id="fId" />
+            <div class="field" id="fNameField">
+              <label for="fName">Full name (surname first)</label>
+              <input type="text" id="fName" placeholder="e.g. ABRAHAM BLESSING" autocomplete="off" maxlength="120" aria-describedby="fNameErr" />
+              <p class="field-err" id="fNameErr">Please enter the student's name.</p>
+            </div>
+            <div class="field">
+              <span class="label" id="fGenderLabel">Gender</span>
+              <div class="segmented" role="radiogroup" aria-labelledby="fGenderLabel">
+                <button class="seg is-on" id="fGenM" type="button" role="radio" aria-checked="true">Male</button>
+                <button class="seg" id="fGenF" type="button" role="radio" aria-checked="false">Female</button>
+              </div>
+            </div>
+            <div class="field-grid">
+              <div class="field"><label for="fAdm">Admission number</label><input type="text" id="fAdm" autocomplete="off" maxlength="40" /></div>
+              <div class="field"><label for="fDob">Date of birth</label><input type="date" id="fDob" /></div>
+            </div>
+            <div class="field">
+              <label for="fParent">Parent / guardian name</label>
+              <div class="input-affix input-affix-btn">
+                <input type="text" id="fParent" autocomplete="off" maxlength="120" />
+                <button class="btn btn-secondary btn-sm" id="fAutoParent" type="button">Auto-fill</button>
+              </div>
+            </div>
+            <div class="field"><label for="fAddr">Address</label><input type="text" id="fAddr" placeholder="e.g. Onidundun, Akinyele" autocomplete="off" maxlength="200" /></div>
+            <div class="field-grid">
+              <div class="field"><label for="fPhone">Parent phone number</label><input type="tel" id="fPhone" autocomplete="off" maxlength="40" /></div>
+              <div class="field">
+                <label for="fReligion">Religion</label>
+                <select id="fReligion"><option>Christianity</option><option>Islam</option><option>Traditional</option></select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="fSave" type="submit">Save student</button>
+              <button class="btn btn-ghost" id="fCancel" type="button">Cancel / New</button>
+            </div>
+          </form>
+          <div class="toolbar toolbar-fill">
+            <div class="search">
+              <span class="search-icon" id="stuSearchIcon"></span>
+              <input type="search" id="studentsSearch" placeholder="Search students" aria-label="Search students" autocomplete="off" />
+            </div>
+            <button class="btn btn-secondary btn-sm" id="exportStudentsCsv" type="button"></button>
+          </div>
+          <h2 class="group-title">Male students <span class="count" id="cntM">0</span></h2>
+          <div id="stuListM"></div>
+          <h2 class="group-title">Female students <span class="count" id="cntF">0</span></h2>
+          <div id="stuListF"></div>
+        </section>
+
+        <!-- Holidays -->
+        <section class="panel" id="panel-holidays" aria-labelledby="h-holidays" hidden>
+          <h1 class="sr-only" id="h-holidays">Holidays</h1>
+          <form class="card form-card" id="holidayForm" novalidate>
+            <h2>Add a holiday</h2>
+            <div class="field-grid">
+              <div class="field"><label for="holDate">Date</label><input type="date" id="holDate" /></div>
+              <div class="field"><label for="holLabel">Reason (optional)</label><input type="text" id="holLabel" placeholder="e.g. Public holiday" autocomplete="off" maxlength="120" /></div>
+            </div>
+            <div class="form-actions"><button class="btn btn-primary" id="addHoliday" type="submit"></button></div>
+          </form>
+          <div id="holList"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+
+    <dialog id="confirmDialog" class="dialog" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+      <div class="dialog-body">
+        <h2 id="confirmTitle">Are you sure?</h2>
+        <p id="confirmMessage"></p>
+        <div class="dialog-actions">
+          <button class="btn btn-ghost" id="confirmNo" type="button">Cancel</button>
+          <button class="btn btn-primary" id="confirmYes" type="button">Confirm</button>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

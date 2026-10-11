@@ -1,0 +1,17 @@
+# dependencies and build output
+node_modules/
+dist/
+coverage/
+
+# local environment files (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# editor and OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+dist-lighthouse/

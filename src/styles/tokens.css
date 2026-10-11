@@ -1,0 +1,150 @@
+/*
+ * Design tokens. Every colour, size, radius, shadow and motion value used by the
+ * app comes from here, so a re-theme only ever touches this file.
+ *
+ * Brand: a quiet, editorial ledger. Warm paper, deep ink-blue as the one
+ * distinctive colour, a restrained brass accent. Fraunces for display, Inter for body.
+ */
+:root {
+  color-scheme: light;
+
+  /* Typefaces */
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Fluid type scale */
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0: clamp(0.94rem, 0.92rem + 0.12vw, 1rem);
+  --step-1: clamp(1.1rem, 1.05rem + 0.25vw, 1.22rem);
+  --step-2: clamp(1.3rem, 1.2rem + 0.5vw, 1.6rem);
+  --step-3: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
+
+  /* Spacing (4px base) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  /* Layout */
+  --content-w: 52rem;
+  --rail-w: 15rem;
+  --tap: 44px;
+
+  /* Layers */
+  --z-nav: 20;
+  --z-top: 30;
+  --z-menu: 40;
+  --z-toast: 60;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 380ms;
+
+  /* Light palette */
+  --bg: #f7f4ed;
+  --surface: #ffffff;
+  --surface-2: #fbf9f4;
+  --line: #e4ddcc;
+  --line-strong: #cfc6af;
+  --text: #1d1b16;
+  --text-2: #5b5444;
+  --primary: #1f3f6e;
+  --primary-hover: #17325a;
+  --primary-ink: #ffffff;
+  --primary-tint: #e9eef6;
+  --accent: #a8731f;
+  --accent-text: #7d530f;
+  --accent-tint: #f6ecd8;
+  --success: #1e6a42;
+  --success-tint: #e1f0e6;
+  --warning: #85560a;
+  --warning-tint: #f8ecd0;
+  --error: #a3262b;
+  --error-tint: #f8e3e1;
+  --info: #1c5c9a;
+  --info-tint: #e2edf8;
+  --focus: #2b6cd4;
+  --overlay: rgb(18 17 13 / 0.5);
+  --shadow-1: 0 1px 2px rgb(29 27 22 / 0.06), 0 1px 1px rgb(29 27 22 / 0.04);
+  --shadow-2: 0 8px 20px -8px rgb(29 27 22 / 0.18), 0 2px 6px -2px rgb(29 27 22 / 0.1);
+  --shadow-3: 0 24px 48px -16px rgb(18 17 13 / 0.34), 0 8px 18px -8px rgb(18 17 13 / 0.16);
+  --selection: #cfdcf1;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #12110d;
+  --surface: #1b1912;
+  --surface-2: #17150f;
+  --line: #2f2b1f;
+  --line-strong: #453f2e;
+  --text: #efe9dc;
+  --text-2: #b6ac97;
+  --primary: #8fb0dc;
+  --primary-hover: #a7c2e6;
+  --primary-ink: #0d1a2c;
+  --primary-tint: #1a2638;
+  --accent: #e0b36d;
+  --accent-text: #e6bf82;
+  --accent-tint: #2c2314;
+  --success: #86cc99;
+  --success-tint: #16261b;
+  --warning: #e6b45e;
+  --warning-tint: #2c2210;
+  --error: #f0a0a1;
+  --error-tint: #2c1a1a;
+  --info: #8fbbe8;
+  --info-tint: #16212e;
+  --focus: #8fb6f5;
+  --overlay: rgb(3 5 9 / 0.66);
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 8px 22px -8px rgb(0 0 0 / 0.55);
+  --shadow-3: 0 26px 52px -18px rgb(0 0 0 / 0.7);
+  --selection: #2a3d5a;
+}
+
+/* Follow the device until the person picks a theme (theme-init.js sets data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #12110d;
+    --surface: #1b1912;
+    --surface-2: #17150f;
+    --line: #2f2b1f;
+    --line-strong: #453f2e;
+    --text: #efe9dc;
+    --text-2: #b6ac97;
+    --primary: #8fb0dc;
+    --primary-hover: #a7c2e6;
+    --primary-ink: #0d1a2c;
+    --primary-tint: #1a2638;
+    --accent: #e0b36d;
+    --accent-text: #e6bf82;
+    --accent-tint: #2c2314;
+    --success: #86cc99;
+    --success-tint: #16261b;
+    --warning: #e6b45e;
+    --warning-tint: #2c2210;
+    --error: #f0a0a1;
+    --error-tint: #2c1a1a;
+    --info: #8fbbe8;
+    --info-tint: #16212e;
+    --focus: #8fb6f5;
+    --overlay: rgb(3 5 9 / 0.66);
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-2: 0 8px 22px -8px rgb(0 0 0 / 0.55);
+    --shadow-3: 0 26px 52px -18px rgb(0 0 0 / 0.7);
+    --selection: #2a3d5a;
+  }
+}
